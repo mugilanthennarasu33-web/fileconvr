@@ -1,0 +1,110 @@
+datasource db {
+  provider = "postgresql"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id           String        @id @default(uuid())
+  email        String        @unique
+  passwordHash String?
+  name         String?
+  avatarUrl    String?
+  status       String        @default("active") // "active", "suspended"
+  role         String        @default("user")   // "user", "admin"
+  tier         String        @default("free")   // "free", "premium"
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  sessions      Session[]
+  jobs          ProcessingJob[]
+  usageRecords  UsageRecord[]
+  subscriptions Subscription[]
+
+  @@index([email])
+}
+
+model Session {
+  id        String    @id @default(uuid())
+  userId    String
+  tokenHash String    @unique
+  ipAddress String?
+  userAgent String?
+  createdAt DateTime  @default(now())
+  expiresAt DateTime
+  revokedAt DateTime?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([tokenHash])
+  @@index([expiresAt])
+}
+
+model ProcessingJob {
+  id              String    @id @default(uuid())
+  userId          String?
+  anonymousId     String?
+  toolType        String
+  status          String    @default("PENDING") // "PENDING", "PROCESSING", "COMPLETED", "FAILED", "CANCELLED"
+  inputFilename   String?
+  outputFilename  String?
+  mimeType        String?
+  inputSizeBytes  BigInt?
+  outputSizeBytes BigInt?
+  pageCount       Int?
+  taskId          String?
+  downloadUrl     String?
+  errorCode       String?
+  errorMessage    String?
+  createdAt       DateTime  @default(now())
+  completedAt     DateTime?
+  expiresAt       DateTime
+
+  user         User?         @relation(fields: [userId], references: [id], onDelete: SetNull)
+  usageRecords UsageRecord[]
+
+  @@index([userId])
+  @@index([anonymousId])
+  @@index([status])
+  @@index([taskId])
+  @@index([createdAt])
+  @@index([expiresAt])
+}
+
+model UsageRecord {
+  id             String   @id @default(uuid())
+  userId         String?
+  anonymousId    String?
+  operationType  String
+  quantity       Int      @default(1)
+  bytesProcessed BigInt   @default(0)
+  jobId          String?
+  timestamp      DateTime @default(now())
+
+  user User?          @relation(fields: [userId], references: [id], onDelete: SetNull)
+  job  ProcessingJob? @relation(fields: [jobId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([anonymousId])
+  @@index([timestamp])
+  @@index([operationType])
+}
+
+model Subscription {
+  id                 String   @id @default(uuid())
+  userId             String
+  tier               String   @default("free") // "free", "premium"
+  status             String   @default("active") // "active", "canceled", "past_due"
+  currentPeriodStart DateTime @default(now())
+  currentPeriodEnd   DateTime
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([status])
+}

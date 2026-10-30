@@ -1,0 +1,10 @@
+{
+  "question": "Who is the principal lead?",
+  "answer": "The principal lead of the project is Dr. Aris Thorne [Page 1].",
+  "pageCitations": [
+    "[Page 1]"
+  ],
+  "pageCount": 1,
+  "modelUsed": "gpt-4o-mini",
+  "timestamp": "2026-10-29T12:30:12.691Z"
+}

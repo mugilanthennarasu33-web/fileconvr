@@ -1,0 +1,20 @@
+# robots.txt for fileconvr (https://fileconvr.com)
+# Allow all search engine crawlers to discover and index public converter pages
+
+User-agent: *
+Allow: /
+Allow: /assets/
+Allow: /favicon.svg
+Allow: /icons.svg
+
+# Exclude private, authenticated, and API routes from crawling
+Disallow: /api/
+Disallow: /dashboard
+Disallow: /account
+Disallow: /login
+Disallow: /register
+Disallow: /auth/
+Disallow: /auth/callback
+
+# Canonical XML Sitemap
+Sitemap: https://fileconvr.com/sitemap.xml
