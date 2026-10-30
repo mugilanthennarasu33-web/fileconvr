@@ -77,24 +77,20 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigateToLogin, o
       <div className="w-full max-w-md">
         {/* Card Header */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-gradient-to-tr from-red-600 via-rose-500 to-amber-500 p-0.5 shadow-xl shadow-red-500/20 mb-4">
-            <div className="w-full h-full bg-slate-950 rounded-[14px] flex items-center justify-center">
-              <Lock className="w-6 h-6 text-red-500" />
-            </div>
-          </div>
-          <h1 className="text-3xl font-extrabold tracking-tight text-white font-heading">
+          <img src="/logo.png" alt="fileconvrt" className="h-9 sm:h-10 w-auto mx-auto mb-4 object-contain" />
+          <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 font-heading">
             Create an Account
           </h1>
-          <p className="text-slate-400 mt-2 text-sm">
+          <p className="text-slate-600 mt-2 text-sm">
             Sign up for free to unlock higher quotas, processing history, and personal dashboard.
           </p>
         </div>
 
         {/* Form Container */}
-        <div className="glass-panel rounded-2xl border border-slate-800/80 bg-slate-900/60 backdrop-blur-xl p-8 shadow-2xl shadow-black/40">
+        <div className="saas-card p-8 shadow-xl">
           {errorMessage && (
-            <div className="mb-6 flex items-start space-x-3 p-3.5 rounded-xl bg-red-500/10 border border-red-500/30 text-red-300 text-sm animate-in fade-in">
-              <AlertCircle className="w-5 h-5 text-red-400 shrink-0 mt-0.5" />
+            <div className="mb-6 flex items-start space-x-3 p-3.5 rounded-xl bg-red-50 border border-red-200 text-red-600 text-sm">
+              <AlertCircle className="w-5 h-5 text-red-500 shrink-0 mt-0.5" strokeWidth={2} />
               <span>{errorMessage}</span>
             </div>
           )}
@@ -105,12 +101,11 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigateToLogin, o
               type="button"
               onClick={handleGoogleSignIn}
               disabled={isGoogleLoading}
-              className="w-full py-3 px-4 rounded-xl font-semibold text-slate-100 bg-slate-800/90 hover:bg-slate-700/90 border border-slate-700/80 hover:border-slate-600 active:scale-[0.99] transition-all duration-200 shadow-lg shadow-black/20 flex items-center justify-center space-x-3 group relative overflow-hidden"
+              className="w-full py-3 px-4 rounded-xl font-semibold text-slate-700 bg-white hover:bg-slate-50 border border-slate-200 active:scale-[0.99] transition-all duration-200 shadow-sm flex items-center justify-center space-x-3 cursor-pointer"
             >
-              <div className="absolute inset-0 bg-gradient-to-r from-red-500/5 via-rose-500/5 to-amber-500/5 opacity-0 group-hover:opacity-100 transition-opacity" />
               {isGoogleLoading ? (
                 <>
-                  <div className="w-5 h-5 border-2 border-slate-400 border-t-white rounded-full animate-spin" />
+                  <div className="w-5 h-5 border-2 border-slate-400 border-t-blue-600 rounded-full animate-spin" />
                   <span>Connecting to Google...</span>
                 </>
               ) : (
@@ -122,10 +117,10 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigateToLogin, o
             </button>
 
             {!isSupabaseConfigured && (
-              <div className="p-3 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-300 text-xs flex items-center space-x-2">
-                <Sparkles className="w-4 h-4 shrink-0 text-amber-400" />
+              <div className="p-3 rounded-lg bg-amber-50 border border-amber-200 text-amber-700 text-xs flex items-center space-x-2">
+                <Sparkles className="w-4 h-4 shrink-0 text-amber-500" />
                 <span>
-                  Supabase Auth is ready. Set <code>VITE_SUPABASE_URL</code> in <code>.env</code> to enable live Google Sign-In.
+                  Supabase Auth is ready. Set <code>VITE_SUPABASE_URL</code> in environment to enable live Google Sign-In.
                 </span>
               </div>
             )}
@@ -134,10 +129,10 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigateToLogin, o
           {/* Divider */}
           <div className="relative my-6">
             <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-slate-800" />
+              <div className="w-full border-t border-slate-200" />
             </div>
             <div className="relative flex justify-center text-xs uppercase tracking-wider">
-              <span className="bg-slate-900 px-3 text-slate-500 font-medium">
+              <span className="bg-white px-3 text-slate-400 font-medium">
                 or register with email
               </span>
             </div>
@@ -146,12 +141,12 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigateToLogin, o
           <form onSubmit={handleSubmit} className="space-y-5">
             {/* Name Input */}
             <div>
-              <label htmlFor="name" className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
+              <label htmlFor="name" className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">
                 Full Name (Optional)
               </label>
               <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500">
-                  <UserIcon className="w-4 h-4" />
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                  <UserIcon className="w-4 h-4" strokeWidth={2} />
                 </div>
                 <input
                   id="name"
@@ -159,19 +154,19 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigateToLogin, o
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="e.g. Alex Morgan"
-                  className="w-full pl-10 pr-4 py-2.5 bg-slate-950/80 border border-slate-800 rounded-xl text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500 text-sm transition-all"
+                  className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 text-sm transition-all"
                 />
               </div>
             </div>
 
             {/* Email Input */}
             <div>
-              <label htmlFor="email" className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
-                Email Address <span className="text-red-500">*</span>
+              <label htmlFor="email" className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">
+                Email Address <span className="text-blue-500">*</span>
               </label>
               <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500">
-                  <Mail className="w-4 h-4" />
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                  <Mail className="w-4 h-4" strokeWidth={2} />
                 </div>
                 <input
                   id="email"
@@ -180,19 +175,19 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigateToLogin, o
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="name@example.com"
-                  className="w-full pl-10 pr-4 py-2.5 bg-slate-950/80 border border-slate-800 rounded-xl text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500 text-sm transition-all"
+                  className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 text-sm transition-all"
                 />
               </div>
             </div>
 
             {/* Password Input */}
             <div>
-              <label htmlFor="password" className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
-                Password <span className="text-red-500">*</span>
+              <label htmlFor="password" className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">
+                Password <span className="text-blue-500">*</span>
               </label>
               <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500">
-                  <Lock className="w-4 h-4" />
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                  <Lock className="w-4 h-4" strokeWidth={2} />
                 </div>
                 <input
                   id="password"
@@ -201,27 +196,27 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigateToLogin, o
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Minimum 8 characters"
-                  className="w-full pl-10 pr-10 py-2.5 bg-slate-950/80 border border-slate-800 rounded-xl text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500 text-sm transition-all"
+                  className="w-full pl-10 pr-10 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 text-sm transition-all"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-200 transition-colors"
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 transition-colors cursor-pointer"
                   aria-label={showPassword ? 'Hide password' : 'Show password'}
                 >
-                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  {showPassword ? <EyeOff className="w-4 h-4" strokeWidth={2} /> : <Eye className="w-4 h-4" strokeWidth={2} />}
                 </button>
               </div>
             </div>
 
             {/* Confirm Password Input */}
             <div>
-              <label htmlFor="confirmPassword" className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
-                Confirm Password <span className="text-red-500">*</span>
+              <label htmlFor="confirmPassword" className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">
+                Confirm Password <span className="text-blue-500">*</span>
               </label>
               <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500">
-                  <Lock className="w-4 h-4" />
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                  <Lock className="w-4 h-4" strokeWidth={2} />
                 </div>
                 <input
                   id="confirmPassword"
@@ -230,26 +225,26 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigateToLogin, o
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder="Repeat your password"
-                  className="w-full pl-10 pr-10 py-2.5 bg-slate-950/80 border border-slate-800 rounded-xl text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500 text-sm transition-all"
+                  className="w-full pl-10 pr-10 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 text-sm transition-all"
                 />
                 <button
                   type="button"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-200 transition-colors"
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 transition-colors cursor-pointer"
                   aria-label={showConfirmPassword ? 'Hide confirm password' : 'Show confirm password'}
                 >
-                  {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  {showConfirmPassword ? <EyeOff className="w-4 h-4" strokeWidth={2} /> : <Eye className="w-4 h-4" strokeWidth={2} />}
                 </button>
               </div>
             </div>
 
             {/* Tier Perk Callout */}
-            <div className="p-3 bg-slate-950/40 rounded-xl border border-slate-800/60 text-xs text-slate-400 space-y-1.5">
-              <div className="flex items-center space-x-2 text-slate-300 font-medium">
-                <CheckCircle2 className="w-3.5 h-3.5 text-red-400" />
+            <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs text-slate-600 space-y-1.5">
+              <div className="flex items-center space-x-2 text-slate-800 font-medium">
+                <CheckCircle2 className="w-3.5 h-3.5 text-blue-600" strokeWidth={2} />
                 <span>Free Plan Features Included:</span>
               </div>
-              <p className="pl-5 text-slate-400">
+              <p className="pl-5 text-slate-500">
                 100 MB max upload • 60 operations/day • Persistent history • Zero tracking
               </p>
             </div>
@@ -258,7 +253,7 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigateToLogin, o
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full py-3 px-4 rounded-xl font-semibold text-white bg-gradient-to-r from-red-600 via-rose-600 to-amber-600 hover:from-red-500 hover:via-rose-500 hover:to-amber-500 active:scale-[0.99] transition-all duration-200 shadow-lg shadow-red-600/20 disabled:opacity-50 disabled:pointer-events-none flex items-center justify-center space-x-2"
+              className="w-full py-3 px-4 rounded-xl font-semibold text-white bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 hover:from-blue-500 hover:via-indigo-500 hover:to-violet-500 active:scale-[0.99] transition-all duration-200 shadow-lg shadow-blue-600/20 disabled:opacity-50 disabled:pointer-events-none flex items-center justify-center space-x-2 cursor-pointer"
             >
               {isLoading ? (
                 <>
@@ -268,19 +263,19 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigateToLogin, o
               ) : (
                 <>
                   <span>Create Account</span>
-                  <ArrowRight className="w-4 h-4" />
+                  <ArrowRight className="w-4 h-4" strokeWidth={2} />
                 </>
               )}
             </button>
           </form>
 
           {/* Switch to Login */}
-          <div className="mt-6 pt-6 border-t border-slate-800/80 text-center text-sm text-slate-400">
+          <div className="mt-6 pt-6 border-t border-slate-100 text-center text-sm text-slate-600">
             Already have an account?{' '}
             <button
               type="button"
               onClick={onNavigateToLogin}
-              className="text-red-400 hover:text-red-300 font-semibold transition-colors"
+              className="text-blue-600 hover:text-blue-500 font-semibold transition-colors cursor-pointer"
             >
               Sign In
             </button>

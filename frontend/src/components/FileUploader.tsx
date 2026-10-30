@@ -16,7 +16,7 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
   maxSizeMB = 100,
   onFilesSelected,
   title = 'Select or drop files here',
-  subtitle = 'Fast, secure & private document processing',
+  subtitle,
 }) => {
   const [isDragOver, setIsDragOver] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -70,10 +70,10 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onClick={() => inputRef.current?.click()}
-        className={`relative rounded-3xl p-10 sm:p-14 text-center cursor-pointer transition-all duration-300 border-2 border-dashed ${
+        className={`relative rounded-3xl p-8 sm:p-14 text-center cursor-pointer transition-all duration-300 border-2 border-dashed ${
           isDragOver
-            ? 'border-red-500 bg-red-500/10 scale-[1.01] shadow-2xl shadow-red-500/10'
-            : 'border-slate-800 hover:border-red-500/50 bg-slate-900/50 hover:bg-slate-900/80'
+            ? 'border-[#4F46E5] bg-[#F7F9FF] scale-[1.01] shadow-xl'
+            : 'border-[#E5EAF2] hover:border-[#4F46E5] bg-[#F7F9FF]/60 hover:bg-[#F7F9FF] shadow-2xs hover:shadow-md'
         }`}
       >
         <input
@@ -85,37 +85,40 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
           onChange={(e) => handleFiles(e.target.files)}
         />
 
-        {/* Upload Icon with Glowing Aura */}
-        <div className="mx-auto w-20 h-20 rounded-2xl bg-gradient-to-tr from-red-600 to-rose-400 p-0.5 shadow-xl shadow-red-500/25 mb-6 group-hover:scale-105 transition-transform">
-          <div className="w-full h-full bg-slate-950 rounded-[14px] flex items-center justify-center">
-            <UploadCloud className="w-10 h-10 text-red-400" />
+        {/* Upload Cloud Icon in squircle */}
+        <div className="mx-auto flex items-center justify-center mb-4">
+          <div className="w-16 h-16 rounded-2xl bg-gradient-to-b from-indigo-50 to-indigo-100/70 border border-indigo-200/90 shadow-[0_2px_8px_rgba(99,102,241,0.12),inset_0_1px_1px_rgba(255,255,255,0.9)] flex items-center justify-center">
+            <UploadCloud className="w-8 h-8 text-[#4F46E5]" strokeWidth={2} />
           </div>
         </div>
 
-        <h3 className="text-xl sm:text-2xl font-bold text-white mb-2 font-heading">
+        <h3 className="text-lg sm:text-xl font-bold text-[#101828] mb-2 font-heading">
           {title}
         </h3>
-        <p className="text-sm text-slate-400 max-w-md mx-auto mb-6">
-          {subtitle}
-        </p>
+        {subtitle && (
+          <p className="text-xs text-[#64748B] mb-2 font-normal">
+            {subtitle}
+          </p>
+        )}
+        <p className="text-xs text-[#94A3B8] mb-4 font-medium">or</p>
 
         {/* Action Button */}
-        <div className="inline-flex items-center space-x-2 px-6 py-3 rounded-xl bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-semibold text-sm shadow-lg shadow-red-500/30 hover:shadow-red-500/50 transition-all duration-200">
-          <File className="w-4 h-4" />
-          <span>Choose {multiple ? 'Files' : 'File'}</span>
+        <div>
+          <div className="btn-primary inline-flex items-center space-x-2 px-6 py-2.5 rounded-xl font-semibold text-sm shadow-xs transition-all duration-200">
+            <File className="w-4 h-4" strokeWidth={2} />
+            <span>Choose {multiple ? 'Files' : 'File'}</span>
+          </div>
         </div>
 
-        <div className="mt-6 flex flex-wrap items-center justify-center gap-3 text-xs text-slate-500">
-          <span>Max file size: <strong className="text-slate-400">{maxSizeMB}MB</strong></span>
-          <span>•</span>
-          <span>Supported: <strong className="text-slate-400">{accept.replace(/\./g, ' ').toUpperCase()}</strong></span>
+        <div className="mt-5 text-xs text-[#64748B]">
+          Max file size: <strong className="font-semibold text-[#101828]">{maxSizeMB} MB</strong> • Supports <strong className="font-semibold text-[#101828]">{accept.replace(/\./g, ' ').toUpperCase().trim()}</strong>
         </div>
       </div>
 
       {/* Error alert if any */}
       {errorMessage && (
-        <div className="mt-4 p-4 rounded-xl bg-red-500/10 border border-red-500/30 flex items-center space-x-3 text-red-400 text-sm">
-          <AlertCircle className="w-5 h-5 flex-shrink-0" />
+        <div className="mt-4 p-4 rounded-xl bg-red-50 border border-red-200 flex items-center space-x-3 text-red-600 text-sm">
+          <AlertCircle className="w-5 h-5 shrink-0" strokeWidth={2} />
           <span>{errorMessage}</span>
         </div>
       )}

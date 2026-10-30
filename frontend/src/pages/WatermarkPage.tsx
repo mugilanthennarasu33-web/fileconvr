@@ -149,16 +149,16 @@ export const WatermarkPage: React.FC<WatermarkPageProps> = ({ onBack, onSelectTo
       <div className="flex items-center space-x-3 mb-6">
         <button
           onClick={onBack}
-          className="p-2 rounded-xl bg-slate-900 border border-slate-800 hover:bg-slate-800 text-slate-400 hover:text-white transition-colors"
+          className="p-2 rounded-xl bg-white border border-slate-200 hover:bg-slate-50 text-slate-600 transition-colors shadow-2xs cursor-pointer"
         >
           <ArrowLeft className="w-4 h-4" />
         </button>
         <div>
-          <h1 className="text-2xl font-bold text-white font-heading flex items-center gap-2">
-            <Stamp className="w-6 h-6 text-brand-500" />
+          <h1 className="text-2xl font-bold text-slate-900 font-heading flex items-center gap-2">
+            <Stamp className="w-6 h-6 text-indigo-600" />
             Watermark PDF
           </h1>
-          <p className="text-xs text-slate-400">
+          <p className="text-xs text-slate-500">
             Stamp customizable text or logo image watermarks across your document pages.
           </p>
         </div>
@@ -180,33 +180,33 @@ export const WatermarkPage: React.FC<WatermarkPageProps> = ({ onBack, onSelectTo
           {/* Settings Panel */}
           <div className="lg:col-span-7 space-y-5">
             {/* Watermark Type Selector */}
-            <div className="glass-panel p-4 rounded-xl border border-slate-800">
-              <label className="text-xs font-semibold text-slate-300 uppercase tracking-wider block mb-3">
+            <div className="saas-card p-4 rounded-2xl border border-slate-200">
+              <label className="text-xs font-semibold text-slate-700 uppercase tracking-wider block mb-3">
                 Watermark Mode
               </label>
               <div className="grid grid-cols-2 gap-3">
                 <button
                   type="button"
                   onClick={() => setWatermarkType('text')}
-                  className={`p-3 rounded-xl border flex items-center justify-center gap-2 text-sm font-medium transition-all ${
+                  className={`p-3 rounded-xl border flex items-center justify-center gap-2 text-sm font-medium transition-all cursor-pointer ${
                     watermarkType === 'text'
-                      ? 'border-brand-500 bg-brand-500/10 text-white shadow-lg shadow-brand-500/10'
-                      : 'border-slate-800 bg-slate-900/60 text-slate-400 hover:text-slate-200'
+                      ? 'border-indigo-600 bg-indigo-50 text-indigo-600 shadow-2xs'
+                      : 'border-slate-200 bg-white text-slate-600 hover:text-slate-900'
                   }`}
                 >
-                  <Type className="w-4 h-4 text-brand-400" />
+                  <Type className="w-4 h-4 text-indigo-600" />
                   Text Watermark
                 </button>
                 <button
                   type="button"
                   onClick={() => setWatermarkType('image')}
-                  className={`p-3 rounded-xl border flex items-center justify-center gap-2 text-sm font-medium transition-all ${
+                  className={`p-3 rounded-xl border flex items-center justify-center gap-2 text-sm font-medium transition-all cursor-pointer ${
                     watermarkType === 'image'
-                      ? 'border-brand-500 bg-brand-500/10 text-white shadow-lg shadow-brand-500/10'
-                      : 'border-slate-800 bg-slate-900/60 text-slate-400 hover:text-slate-200'
+                      ? 'border-indigo-600 bg-indigo-50 text-indigo-600 shadow-2xs'
+                      : 'border-slate-200 bg-white text-slate-600 hover:text-slate-900'
                   }`}
                 >
-                  <ImageIcon className="w-4 h-4 text-purple-400" />
+                  <ImageIcon className="w-4 h-4 text-purple-500" />
                   Image Watermark
                 </button>
               </div>
@@ -214,52 +214,52 @@ export const WatermarkPage: React.FC<WatermarkPageProps> = ({ onBack, onSelectTo
 
             {/* Type-specific inputs */}
             {watermarkType === 'text' ? (
-              <div className="glass-panel p-5 rounded-xl border border-slate-800 space-y-4">
+              <div className="saas-card p-5 rounded-2xl border border-slate-200 space-y-4">
                 <div>
-                  <label className="block text-xs font-medium text-slate-300 mb-1.5">Watermark Text</label>
+                  <label className="block text-xs font-medium text-slate-700 mb-1.5">Watermark Text</label>
                   <input
                     type="text"
                     value={text}
                     onChange={(e) => setText(e.target.value)}
                     placeholder="e.g. CONFIDENTIAL, DRAFT, SAMPLE"
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-white text-sm focus:border-brand-500 focus:outline-none"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-sm focus:border-indigo-600 focus:outline-none"
                   />
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-medium text-slate-300 mb-1.5">Font Size ({fontSize}pt)</label>
+                    <label className="block text-xs font-medium text-slate-700 mb-1.5">Font Size ({fontSize}pt)</label>
                     <input
                       type="range"
                       min="12"
                       max="120"
                       value={fontSize}
                       onChange={(e) => setFontSize(Number(e.target.value))}
-                      className="w-full accent-brand-500"
+                      className="w-full accent-indigo-600"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-medium text-slate-300 mb-1.5">Color</label>
+                    <label className="block text-xs font-medium text-slate-700 mb-1.5">Color</label>
                     <div className="flex items-center gap-2">
                       <input
                         type="color"
                         value={color}
                         onChange={(e) => setColor(e.target.value)}
-                        className="w-10 h-9 rounded-lg bg-transparent border border-slate-800 cursor-pointer"
+                        className="w-10 h-9 rounded-lg bg-transparent border border-slate-200 cursor-pointer"
                       />
                       <input
                         type="text"
                         value={color}
                         onChange={(e) => setColor(e.target.value)}
-                        className="flex-1 px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-800 text-white text-xs font-mono"
+                        className="flex-1 px-3 py-1.5 rounded-lg bg-slate-50 border border-slate-200 text-slate-900 text-xs font-mono"
                       />
                     </div>
                   </div>
                 </div>
               </div>
             ) : (
-              <div className="glass-panel p-5 rounded-xl border border-slate-800 space-y-4">
-                <label className="block text-xs font-medium text-slate-300 mb-1.5">
+              <div className="saas-card p-5 rounded-2xl border border-slate-200 space-y-4">
+                <label className="block text-xs font-medium text-slate-700 mb-1.5">
                   Upload Watermark Image (PNG or JPEG)
                 </label>
                 <input
@@ -270,19 +270,19 @@ export const WatermarkPage: React.FC<WatermarkPageProps> = ({ onBack, onSelectTo
                       setImageFile(e.target.files[0]);
                     }
                   }}
-                  className="w-full text-xs text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-purple-600/20 file:text-purple-300 hover:file:bg-purple-600/30"
+                  className="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-indigo-50 file:text-indigo-600 hover:file:bg-indigo-100 cursor-pointer"
                 />
 
                 {imageFile && (
-                  <div className="flex items-center gap-3 p-3 rounded-lg bg-slate-900 border border-slate-800 text-xs text-slate-300">
-                    <ImageIcon className="w-4 h-4 text-purple-400 flex-shrink-0" />
+                  <div className="flex items-center gap-3 p-3 rounded-lg bg-slate-50 border border-slate-200 text-xs text-slate-700">
+                    <ImageIcon className="w-4 h-4 text-purple-500 flex-shrink-0" />
                     <span className="truncate flex-1">{imageFile.name}</span>
                     <span className="text-slate-500">{(imageFile.size / 1024).toFixed(1)} KB</span>
                   </div>
                 )}
 
                 <div>
-                  <label className="block text-xs font-medium text-slate-300 mb-1.5">
+                  <label className="block text-xs font-medium text-slate-700 mb-1.5">
                     Image Scale ({(scale * 100).toFixed(0)}%)
                   </label>
                   <input
@@ -292,33 +292,33 @@ export const WatermarkPage: React.FC<WatermarkPageProps> = ({ onBack, onSelectTo
                     step="0.05"
                     value={scale}
                     onChange={(e) => setScale(Number(e.target.value))}
-                    className="w-full accent-brand-500"
+                    className="w-full accent-indigo-600"
                   />
                 </div>
               </div>
             )}
 
             {/* Position and Opacity */}
-            <div className="glass-panel p-5 rounded-xl border border-slate-800 space-y-4">
+            <div className="saas-card p-5 rounded-2xl border border-slate-200 space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-medium text-slate-300 mb-2">3x3 Grid Position</label>
+                  <label className="block text-xs font-medium text-slate-700 mb-2">3x3 Grid Position</label>
                   <div className="grid grid-cols-3 gap-1.5 w-32">
                     {gridPositions.map((pos) => (
                       <button
                         key={pos}
                         type="button"
                         onClick={() => setPosition(pos)}
-                        className={`h-9 rounded-lg border flex items-center justify-center transition-all ${
+                        className={`h-9 rounded-lg border flex items-center justify-center transition-all cursor-pointer ${
                           position === pos
-                            ? 'border-brand-500 bg-brand-500/20 text-brand-400 font-bold'
-                            : 'border-slate-800 bg-slate-900/60 hover:border-slate-700 text-slate-500'
+                            ? 'border-indigo-600 bg-indigo-50 text-indigo-600 font-bold'
+                            : 'border-slate-200 bg-white hover:border-slate-300 text-slate-400'
                         }`}
                         title={pos}
                       >
                         <div
                           className={`w-2 h-2 rounded-full ${
-                            position === pos ? 'bg-brand-500' : 'bg-slate-700'
+                            position === pos ? 'bg-indigo-600' : 'bg-slate-300'
                           }`}
                         />
                       </button>
@@ -328,7 +328,7 @@ export const WatermarkPage: React.FC<WatermarkPageProps> = ({ onBack, onSelectTo
 
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-xs font-medium text-slate-300 mb-1.5">
+                    <label className="block text-xs font-medium text-slate-700 mb-1.5">
                       Opacity ({(opacity * 100).toFixed(0)}%)
                     </label>
                     <input
@@ -338,12 +338,12 @@ export const WatermarkPage: React.FC<WatermarkPageProps> = ({ onBack, onSelectTo
                       step="0.05"
                       value={opacity}
                       onChange={(e) => setOpacity(Number(e.target.value))}
-                      className="w-full accent-brand-500"
+                      className="w-full accent-indigo-600"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs font-medium text-slate-300 mb-1.5">
+                    <label className="block text-xs font-medium text-slate-700 mb-1.5">
                       Rotation ({rotation}°)
                     </label>
                     <input
@@ -353,7 +353,7 @@ export const WatermarkPage: React.FC<WatermarkPageProps> = ({ onBack, onSelectTo
                       step="5"
                       value={rotation}
                       onChange={(e) => setRotation(Number(e.target.value))}
-                      className="w-full accent-brand-500"
+                      className="w-full accent-indigo-600"
                     />
                   </div>
                 </div>
@@ -361,8 +361,8 @@ export const WatermarkPage: React.FC<WatermarkPageProps> = ({ onBack, onSelectTo
             </div>
 
             {/* Pages Range Selector */}
-            <div className="glass-panel p-5 rounded-xl border border-slate-800 space-y-3">
-              <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider">
+            <div className="saas-card p-5 rounded-2xl border border-slate-200 space-y-3">
+              <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider">
                 Apply to Pages
               </label>
               <div className="grid grid-cols-4 gap-2">
@@ -371,10 +371,10 @@ export const WatermarkPage: React.FC<WatermarkPageProps> = ({ onBack, onSelectTo
                     key={mode}
                     type="button"
                     onClick={() => setPagesSelection(mode)}
-                    className={`py-2 rounded-lg border text-xs font-medium capitalize transition-all ${
+                    className={`py-2 rounded-lg border text-xs font-medium capitalize transition-all cursor-pointer ${
                       pagesSelection === mode
-                        ? 'border-brand-500 bg-brand-500/10 text-brand-400'
-                        : 'border-slate-800 bg-slate-900/60 text-slate-400 hover:text-slate-200'
+                        ? 'border-indigo-600 bg-indigo-50 text-indigo-600'
+                        : 'border-slate-200 bg-white text-slate-600 hover:text-slate-900'
                     }`}
                   >
                     {mode}
@@ -389,23 +389,23 @@ export const WatermarkPage: React.FC<WatermarkPageProps> = ({ onBack, onSelectTo
                     value={customRange}
                     onChange={(e) => setCustomRange(e.target.value)}
                     placeholder="e.g. 1-3, 5, 8-10"
-                    className="w-full px-3 py-2 rounded-lg bg-slate-900 border border-slate-800 text-white text-xs"
+                    className="w-full px-3 py-2 rounded-lg bg-slate-50 border border-slate-200 text-slate-900 text-xs"
                   />
                   <p className="text-[10px] text-slate-400 mt-1">Specify comma-separated page numbers or ranges.</p>
                 </div>
               )}
 
               {/* Layer Placement */}
-              <div className="pt-2 border-t border-slate-800/80">
-                <label className="block text-xs font-medium text-slate-300 mb-1.5">Layer Placement</label>
+              <div className="pt-2 border-t border-slate-100">
+                <label className="block text-xs font-medium text-slate-700 mb-1.5">Layer Placement</label>
                 <div className="grid grid-cols-2 gap-2">
                   <button
                     type="button"
                     onClick={() => setLayer('above')}
-                    className={`py-1.5 rounded-lg border text-xs font-medium flex items-center justify-center gap-1.5 transition-all ${
+                    className={`py-1.5 rounded-lg border text-xs font-medium flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
                       layer === 'above'
-                        ? 'border-brand-500 bg-brand-500/10 text-brand-400'
-                        : 'border-slate-800 bg-slate-900/60 text-slate-400'
+                        ? 'border-indigo-600 bg-indigo-50 text-indigo-600'
+                        : 'border-slate-200 bg-white text-slate-600'
                     }`}
                   >
                     <Layers className="w-3.5 h-3.5" /> Above Page Content
@@ -413,10 +413,10 @@ export const WatermarkPage: React.FC<WatermarkPageProps> = ({ onBack, onSelectTo
                   <button
                     type="button"
                     onClick={() => setLayer('below')}
-                    className={`py-1.5 rounded-lg border text-xs font-medium flex items-center justify-center gap-1.5 transition-all ${
+                    className={`py-1.5 rounded-lg border text-xs font-medium flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
                       layer === 'below'
-                        ? 'border-brand-500 bg-brand-500/10 text-brand-400'
-                        : 'border-slate-800 bg-slate-900/60 text-slate-400'
+                        ? 'border-indigo-600 bg-indigo-50 text-indigo-600'
+                        : 'border-slate-200 bg-white text-slate-600'
                     }`}
                   >
                     <Layers className="w-3.5 h-3.5" /> Background Layer
@@ -426,15 +426,15 @@ export const WatermarkPage: React.FC<WatermarkPageProps> = ({ onBack, onSelectTo
             </div>
 
             {error && (
-              <div className="p-4 rounded-xl border border-red-500/30 bg-red-500/10 text-red-300 text-xs flex items-center gap-2">
-                <AlertCircle className="w-4 h-4 flex-shrink-0 text-red-400" />
+              <div className="p-4 rounded-xl border border-red-200 bg-red-50 text-red-600 text-xs flex items-center gap-2">
+                <AlertCircle className="w-4 h-4 flex-shrink-0 text-red-500" />
                 <span>{error}</span>
               </div>
             )}
 
             <button
               onClick={handleApplyWatermark}
-              className="w-full py-3.5 rounded-xl bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-500 hover:to-indigo-500 text-white font-semibold text-sm shadow-lg shadow-brand-500/20 transition-all flex items-center justify-center gap-2"
+              className="w-full py-3.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-sm shadow-md shadow-indigo-500/20 transition-all flex items-center justify-center gap-2 cursor-pointer"
             >
               <Stamp className="w-4 h-4" />
               Apply Watermark & Download PDF
@@ -443,21 +443,21 @@ export const WatermarkPage: React.FC<WatermarkPageProps> = ({ onBack, onSelectTo
 
           {/* Interactive Visual Preview Card */}
           <div className="lg:col-span-5">
-            <div className="glass-panel p-5 rounded-2xl border border-slate-800 sticky top-6">
-              <h3 className="text-xs font-semibold text-slate-300 uppercase tracking-wider mb-4">
+            <div className="saas-card p-5 rounded-2xl border border-slate-200 sticky top-6">
+              <h3 className="text-xs font-semibold text-slate-700 uppercase tracking-wider mb-4">
                 Watermark Simulation
               </h3>
 
-              <div className="w-full aspect-[1/1.4] bg-white rounded-lg shadow-2xl p-6 relative flex flex-col justify-between overflow-hidden select-none border border-slate-200">
+              <div className="w-full aspect-[1/1.4] bg-white rounded-lg shadow-xl p-6 relative flex flex-col justify-between overflow-hidden select-none border border-slate-200">
                 {/* Simulated Document Content Skeleton */}
-                <div className="space-y-3 opacity-30">
-                  <div className="h-4 bg-slate-800 rounded w-2/3" />
-                  <div className="h-2 bg-slate-600 rounded w-full" />
-                  <div className="h-2 bg-slate-600 rounded w-5/6" />
-                  <div className="h-2 bg-slate-600 rounded w-4/6" />
-                  <div className="h-24 bg-slate-300 rounded w-full my-4" />
-                  <div className="h-2 bg-slate-600 rounded w-full" />
-                  <div className="h-2 bg-slate-600 rounded w-3/4" />
+                <div className="space-y-3 opacity-60">
+                  <div className="h-4 bg-slate-300 rounded w-2/3" />
+                  <div className="h-2 bg-slate-200 rounded w-full" />
+                  <div className="h-2 bg-slate-200 rounded w-5/6" />
+                  <div className="h-2 bg-slate-200 rounded w-4/6" />
+                  <div className="h-24 bg-slate-100 rounded w-full my-4 border border-slate-200" />
+                  <div className="h-2 bg-slate-200 rounded w-full" />
+                  <div className="h-2 bg-slate-200 rounded w-3/4" />
                 </div>
 
                 {/* Simulated Watermark Overlay */}
@@ -507,12 +507,12 @@ export const WatermarkPage: React.FC<WatermarkPageProps> = ({ onBack, onSelectTo
                 {/* Footer simulation */}
                 <div className="text-[10px] text-slate-400 border-t border-slate-200 pt-2 flex justify-between">
                   <span>Page 1</span>
-                  <span>fileconvr Protected</span>
+                  <span>fileconvrt Protected</span>
                 </div>
               </div>
 
               <div className="mt-4 text-center">
-                <span className="text-[11px] text-slate-400">
+                <span className="text-[11px] text-slate-500">
                   Target: {file.name} ({(file.size / (1024 * 1024)).toFixed(2)} MB)
                 </span>
               </div>
@@ -524,6 +524,8 @@ export const WatermarkPage: React.FC<WatermarkPageProps> = ({ onBack, onSelectTo
       <ProcessingModal
         state={state}
         statusMessage="Rendering watermark layers, computing vector coordinates, and generating PDF..."
+        sourceFormat="pdf"
+        targetFormat="pdf"
       />
 
       {/* Educational SEO & FAQ Section */}

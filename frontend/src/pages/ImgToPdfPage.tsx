@@ -107,13 +107,14 @@ export const ImgToPdfPage: React.FC<ImgToPdfPageProps> = ({ onBack, onSelectTool
       <div className="flex items-center space-x-3 mb-6">
         <button
           onClick={onBack}
-          className="p-2 rounded-xl bg-slate-900 border border-slate-800 hover:bg-slate-800 text-slate-400 hover:text-white transition-colors"
+          className="p-2 rounded-xl bg-white border border-slate-200 hover:bg-slate-50 text-slate-600 transition-colors shadow-sm cursor-pointer"
+          title="Back to home"
         >
-          <ArrowLeft className="w-4 h-4" />
+          <ArrowLeft className="w-4 h-4" strokeWidth={2} />
         </button>
         <div>
-          <h1 className="text-2xl font-bold text-white font-heading">JPG / PNG to PDF Converter</h1>
-          <p className="text-xs text-slate-400">Convert raster images into clean, formatted PDF documents.</p>
+          <h1 className="text-2xl font-bold text-slate-900 font-heading">JPG / PNG to PDF Converter</h1>
+          <p className="text-xs text-slate-500">Convert raster images into clean, formatted PDF documents.</p>
         </div>
       </div>
 
@@ -129,19 +130,19 @@ export const ImgToPdfPage: React.FC<ImgToPdfPageProps> = ({ onBack, onSelectTool
       ) : (
         <div className="space-y-6">
           {/* Layout Configuration Panel */}
-          <div className="glass-panel p-6 rounded-2xl border border-slate-800 space-y-4">
-            <h3 className="text-sm font-bold uppercase tracking-wider text-slate-400">
+          <div className="saas-card p-6 space-y-4">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500">
               PDF Layout Settings
             </h3>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               {/* Page Size */}
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-2">Page Size</label>
+                <label className="block text-xs font-semibold text-slate-700 mb-2">Page Size</label>
                 <select
                   value={pageSize}
                   onChange={(e) => setPageSize(e.target.value as any)}
-                  className="w-full px-3 py-2.5 rounded-xl bg-slate-900 border border-slate-700 text-white text-xs focus:outline-none"
+                  className="w-full px-3 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs focus:outline-none focus:ring-1 focus:ring-blue-500"
                 >
                   <option value="fit">Fit (Same as image)</option>
                   <option value="a4">A4 (210 × 297 mm)</option>
@@ -151,11 +152,11 @@ export const ImgToPdfPage: React.FC<ImgToPdfPageProps> = ({ onBack, onSelectTool
 
               {/* Orientation */}
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-2">Orientation</label>
+                <label className="block text-xs font-semibold text-slate-700 mb-2">Orientation</label>
                 <select
                   value={orientation}
                   onChange={(e) => setOrientation(e.target.value as any)}
-                  className="w-full px-3 py-2.5 rounded-xl bg-slate-900 border border-slate-700 text-white text-xs focus:outline-none"
+                  className="w-full px-3 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs focus:outline-none focus:ring-1 focus:ring-blue-500"
                 >
                   <option value="auto">Auto (Match image ratio)</option>
                   <option value="portrait">Portrait</option>
@@ -165,11 +166,11 @@ export const ImgToPdfPage: React.FC<ImgToPdfPageProps> = ({ onBack, onSelectTool
 
               {/* Margin */}
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-2">Margin</label>
+                <label className="block text-xs font-semibold text-slate-700 mb-2">Margin</label>
                 <select
                   value={margin}
                   onChange={(e) => setMargin(e.target.value as any)}
-                  className="w-full px-3 py-2.5 rounded-xl bg-slate-900 border border-slate-700 text-white text-xs focus:outline-none"
+                  className="w-full px-3 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs focus:outline-none focus:ring-1 focus:ring-blue-500"
                 >
                   <option value="none">No margin</option>
                   <option value="small">Small margin</option>
@@ -200,24 +201,24 @@ export const ImgToPdfPage: React.FC<ImgToPdfPageProps> = ({ onBack, onSelectTool
 
           {/* Error Notice */}
           {error && (
-            <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/30 flex items-center space-x-3 text-red-400 text-sm">
-              <AlertCircle className="w-5 h-5 flex-shrink-0" />
+            <div className="p-4 rounded-xl bg-red-50 border border-red-200 flex items-center space-x-3 text-red-600 text-sm">
+              <AlertCircle className="w-5 h-5 shrink-0" strokeWidth={2} />
               <span>{error}</span>
             </div>
           )}
 
           {/* Actions */}
-          <div className="pt-4 flex flex-col sm:flex-row items-center justify-end gap-3 border-t border-slate-800">
+          <div className="pt-4 flex flex-col sm:flex-row items-center justify-end gap-3 border-t border-slate-200">
             <button
               onClick={handleReset}
-              className="w-full sm:w-auto px-5 py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 text-sm font-semibold border border-slate-800"
+              className="w-full sm:w-auto px-5 py-3 rounded-xl bg-white hover:bg-slate-50 text-slate-700 text-sm font-semibold border border-slate-200 cursor-pointer transition-colors"
             >
               Clear All
             </button>
 
             <button
               onClick={handleConvert}
-              className="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-gradient-to-r from-red-600 via-rose-600 to-amber-600 hover:from-red-500 hover:to-amber-500 text-white font-bold text-sm shadow-xl shadow-red-500/25 hover:shadow-red-500/40 transition-all cursor-pointer"
+              className="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 hover:from-blue-500 hover:to-violet-500 text-white font-bold text-sm shadow-md shadow-blue-500/25 transition-all cursor-pointer"
             >
               Convert to PDF →
             </button>
@@ -226,7 +227,7 @@ export const ImgToPdfPage: React.FC<ImgToPdfPageProps> = ({ onBack, onSelectTool
       )}
 
       {/* Processing Modal */}
-      <ProcessingModal state={state} />
+      <ProcessingModal state={state} sourceFormat="image" targetFormat="pdf" />
 
       {/* Educational SEO & FAQ Section */}
       <ToolSeoSection

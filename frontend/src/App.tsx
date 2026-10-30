@@ -3,6 +3,7 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 import { Header } from './components/Header';
 import { Footer } from './components/Footer';
 import { SeoHead } from './components/SeoHead';
+import { ErrorBoundary } from './components/ErrorBoundary';
 import { TOOLS_SEO_DATA, SITE_CONFIG } from './data/seoData';
 
 // Pages
@@ -33,6 +34,8 @@ import { DashboardPage } from './pages/DashboardPage';
 import { OAuthCallbackPage } from './pages/OAuthCallbackPage';
 import { NotFoundPage } from './pages/NotFoundPage';
 
+import { ThemeProvider } from './context/ThemeContext';
+
 const ROUTE_MAP: Record<string, string | null> = {
   '/': null,
   '/merge-pdf': 'merge-pdf',
@@ -49,6 +52,7 @@ const ROUTE_MAP: Record<string, string | null> = {
   '/word-to-pdf': 'word-to-pdf',
   '/excel-to-pdf': 'excel-to-pdf',
   '/ppt-to-pdf': 'ppt-to-pdf',
+  '/pdf-to-ppt': 'ppt-to-pdf',
   '/pdf-to-word': 'pdf-to-word',
   '/protect-pdf': 'protect-pdf',
   '/unlock-pdf': 'unlock-pdf',
@@ -135,7 +139,7 @@ function AppContent() {
   const currentToolContent = activeTool ? TOOLS_SEO_DATA[activeTool] : undefined;
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-950 text-slate-100 selection:bg-red-500/30 selection:text-red-200">
+    <div className="min-h-screen flex flex-col bg-white text-slate-900 selection:bg-indigo-500/20 selection:text-indigo-700 transition-colors duration-200">
       {/* Route-level Dynamic SEO Head */}
       {activeTool === null && (
         <SeoHead
@@ -293,9 +297,13 @@ function AppContent() {
 
 export function App() {
   return (
-    <AuthProvider>
-      <AppContent />
-    </AuthProvider>
+    <ErrorBoundary>
+      <ThemeProvider>
+        <AuthProvider>
+          <AppContent />
+        </AuthProvider>
+      </ThemeProvider>
+    </ErrorBoundary>
   );
 }
 

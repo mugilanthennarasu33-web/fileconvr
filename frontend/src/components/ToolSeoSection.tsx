@@ -32,19 +32,19 @@ export const ToolSeoSection: React.FC<ToolSeoSectionProps> = ({
   );
 
   return (
-    <section className="mt-16 pt-12 border-t border-slate-800/80 text-slate-200">
+    <section className="mt-16 pt-12 border-t border-[#E5EAF2] text-[#101828]">
       {/* 1. How It Works Steps */}
       <div className="mb-14">
         <div className="text-center max-w-2xl mx-auto mb-8">
-          <div className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-red-500/10 text-red-400 text-xs font-semibold mb-3">
-            <Zap className="w-3.5 h-3.5" />
+          <div className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-indigo-50 border border-indigo-100 text-[#4F46E5] text-xs font-semibold mb-3 shadow-2xs">
+            <Zap className="w-3.5 h-3.5 text-[#4F46E5]" strokeWidth={2} />
             <span>Fast & Simple Process</span>
           </div>
-          <h2 className="text-2xl sm:text-3xl font-bold text-white font-heading">
+          <h2 className="text-2xl sm:text-3xl font-extrabold text-[#101828] font-heading">
             How to Use {content.h1}
           </h2>
-          <p className="text-sm text-slate-400 mt-2">
-            Follow these straightforward steps to complete your PDF task in seconds without installing software.
+          <p className="text-sm text-[#64748B] mt-2 font-medium">
+            Follow these straightforward steps to complete your document task in seconds without installing software.
           </p>
         </div>
 
@@ -52,13 +52,13 @@ export const ToolSeoSection: React.FC<ToolSeoSectionProps> = ({
           {content.howToSteps.map((step, idx) => (
             <div
               key={idx}
-              className="p-5 rounded-2xl bg-slate-900/60 border border-slate-800/80 relative flex flex-col justify-between hover:border-slate-700 transition-colors"
+              className="saas-card bg-white border border-[#E5EAF2] p-5 rounded-2xl relative flex flex-col justify-between shadow-xs"
             >
               <div>
-                <span className="inline-flex items-center justify-center w-8 h-8 rounded-xl bg-gradient-to-tr from-red-600 to-rose-500 text-white font-bold text-sm mb-3 shadow-md shadow-red-500/20">
+                <span className="inline-flex items-center justify-center w-8 h-8 rounded-xl bg-gradient-to-r from-[#2563EB] to-[#4F46E5] text-white font-bold text-sm mb-3 shadow-sm">
                   {idx + 1}
                 </span>
-                <p className="text-sm text-slate-300 leading-relaxed">{step}</p>
+                <p className="text-sm text-[#101828] leading-relaxed font-medium">{step}</p>
               </div>
             </div>
           ))}
@@ -68,17 +68,17 @@ export const ToolSeoSection: React.FC<ToolSeoSectionProps> = ({
       {/* 2. Key Capabilities & Technical Specifications */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-14">
         {/* Features Card */}
-        <div className="lg:col-span-2 p-6 rounded-2xl glass-panel border border-slate-800/90">
+        <div className="lg:col-span-2 saas-card bg-white border border-[#E5EAF2] rounded-2xl p-6 shadow-xs">
           <div className="flex items-center space-x-2.5 mb-4">
-            <div className="p-2 rounded-lg bg-red-500/10 text-red-400 border border-red-500/20">
-              <CheckCircle2 className="w-5 h-5" />
+            <div className="p-2 rounded-xl bg-indigo-50 text-[#4F46E5] border border-indigo-100">
+              <CheckCircle2 className="w-5 h-5" strokeWidth={2} />
             </div>
-            <h3 className="text-lg font-bold text-white font-heading">Key Features & Highlights</h3>
+            <h3 className="text-lg font-bold text-[#101828] font-heading">Key Features & Highlights</h3>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
             {content.features.map((feat, i) => (
-              <div key={i} className="flex items-start space-x-2 text-sm text-slate-300">
-                <span className="text-red-500 mt-0.5">•</span>
+              <div key={i} className="flex items-start space-x-2 text-sm text-[#64748B]">
+                <span className="text-[#4F46E5] font-bold mt-0.5">•</span>
                 <span>{feat}</span>
               </div>
             ))}
@@ -86,36 +86,36 @@ export const ToolSeoSection: React.FC<ToolSeoSectionProps> = ({
         </div>
 
         {/* Formats & Lifecycle Specs */}
-        <div className="p-6 rounded-2xl glass-panel border border-slate-800/90 flex flex-col justify-between">
+        <div className="saas-card bg-white border border-[#E5EAF2] rounded-2xl p-6 shadow-xs flex flex-col justify-between">
           <div>
             <div className="flex items-center space-x-2.5 mb-4">
-              <div className="p-2 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                <FileCheck className="w-5 h-5" />
+              <div className="p-2 rounded-xl bg-emerald-50 text-[#10B981] border border-emerald-100">
+                <FileCheck className="w-5 h-5" strokeWidth={2} />
               </div>
-              <h3 className="text-lg font-bold text-white font-heading">Technical Specs</h3>
+              <h3 className="text-lg font-bold text-[#101828] font-heading">Technical Specs</h3>
             </div>
-            <ul className="space-y-2.5 text-xs text-slate-300">
-              <li className="flex justify-between py-1.5 border-b border-slate-800">
-                <span className="text-slate-400">Supported Input:</span>
-                <span className="font-semibold text-white">{content.supportedFormats.input.join(', ')}</span>
+            <ul className="space-y-2.5 text-xs text-[#64748B]">
+              <li className="flex justify-between py-1.5 border-b border-[#E5EAF2]">
+                <span className="text-[#64748B]">Supported Input:</span>
+                <span className="font-semibold text-[#101828]">{content.supportedFormats.input.join(', ')}</span>
               </li>
-              <li className="flex justify-between py-1.5 border-b border-slate-800">
-                <span className="text-slate-400">Output Format:</span>
-                <span className="font-semibold text-white">{content.supportedFormats.output.join(', ')}</span>
+              <li className="flex justify-between py-1.5 border-b border-[#E5EAF2]">
+                <span className="text-[#64748B]">Output Format:</span>
+                <span className="font-semibold text-[#101828]">{content.supportedFormats.output.join(', ')}</span>
               </li>
-              <li className="flex justify-between py-1.5 border-b border-slate-800">
-                <span className="text-slate-400">Max File Size:</span>
-                <span className="font-semibold text-white">{content.supportedFormats.maxSizeMB} MB</span>
+              <li className="flex justify-between py-1.5 border-b border-[#E5EAF2]">
+                <span className="text-[#64748B]">Max File Size:</span>
+                <span className="font-semibold text-[#101828]">{content.supportedFormats.maxSizeMB} MB</span>
               </li>
               <li className="flex justify-between py-1.5">
-                <span className="text-slate-400">Compatibility:</span>
-                <span className="font-semibold text-white">All modern browsers</span>
+                <span className="text-[#64748B]">Compatibility:</span>
+                <span className="font-semibold text-[#101828]">All modern browsers</span>
               </li>
             </ul>
           </div>
 
-          <div className="mt-4 pt-3 border-t border-slate-800 flex items-start space-x-2 text-[11px] text-slate-400">
-            <ShieldCheck className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
+          <div className="mt-4 pt-3 border-t border-[#E5EAF2] flex items-start space-x-2 text-[11px] text-[#64748B]">
+            <ShieldCheck className="w-4 h-4 text-[#10B981] shrink-0 mt-0.5" strokeWidth={2} />
             <span>{content.privacyNotice}</span>
           </div>
         </div>
@@ -125,14 +125,14 @@ export const ToolSeoSection: React.FC<ToolSeoSectionProps> = ({
       {content.faqs && content.faqs.length > 0 && (
         <div className="mb-14">
           <div className="text-center max-w-2xl mx-auto mb-8">
-            <div className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-blue-500/10 text-blue-400 text-xs font-semibold mb-3">
-              <HelpCircle className="w-3.5 h-3.5" />
+            <div className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-indigo-50 border border-indigo-100 text-[#4F46E5] text-xs font-semibold mb-3 shadow-2xs">
+              <HelpCircle className="w-3.5 h-3.5 text-[#4F46E5]" strokeWidth={2} />
               <span>Questions & Answers</span>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-bold text-white font-heading">
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-[#101828] font-heading">
               Frequently Asked Questions
             </h2>
-            <p className="text-sm text-slate-400 mt-2">
+            <p className="text-sm text-[#64748B] mt-2 font-medium">
               Everything you need to know about processing files with {content.h1}.
             </p>
           </div>
@@ -143,22 +143,23 @@ export const ToolSeoSection: React.FC<ToolSeoSectionProps> = ({
               return (
                 <div
                   key={idx}
-                  className="rounded-xl border border-slate-800 bg-slate-900/60 overflow-hidden transition-colors"
+                  className="saas-card bg-white border border-[#E5EAF2] rounded-xl overflow-hidden shadow-2xs"
                 >
                   <button
                     onClick={() => toggleFaq(idx)}
-                    className="w-full px-5 py-4 text-left flex items-center justify-between text-white font-semibold text-sm hover:text-red-400 transition-colors focus:outline-none"
+                    className="w-full px-5 py-4 text-left flex items-center justify-between text-[#101828] font-semibold text-sm hover:text-[#4F46E5] transition-colors focus:outline-none cursor-pointer"
                     aria-expanded={isOpen}
                   >
                     <span>{faq.question}</span>
                     <ChevronDown
-                      className={`w-4 h-4 text-slate-400 transition-transform duration-200 ${
-                        isOpen ? 'rotate-180 text-red-400' : ''
+                      className={`w-4 h-4 text-[#64748B] transition-transform duration-200 shrink-0 ml-4 ${
+                        isOpen ? 'rotate-180 text-[#4F46E5]' : ''
                       }`}
+                      strokeWidth={2}
                     />
                   </button>
                   {isOpen && (
-                    <div className="px-5 pb-4 text-xs sm:text-sm text-slate-300 border-t border-slate-800/60 pt-3 leading-relaxed">
+                    <div className="px-5 pb-4 text-xs sm:text-sm text-[#64748B] border-t border-[#E5EAF2] pt-3 leading-relaxed animate-fade-in">
                       {faq.answer}
                     </div>
                   )}
@@ -174,10 +175,10 @@ export const ToolSeoSection: React.FC<ToolSeoSectionProps> = ({
         <div className="mb-8">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center space-x-2">
-              <Layers className="w-4 h-4 text-red-400" />
-              <h3 className="text-base font-bold text-white font-heading">Related PDF Utilities</h3>
+              <Layers className="w-4 h-4 text-[#4F46E5]" strokeWidth={2} />
+              <h3 className="text-base font-bold text-[#101828] font-heading">Related Document Utilities</h3>
             </div>
-            <span className="text-xs text-slate-400">Discover more free tools</span>
+            <span className="text-xs text-[#64748B] font-medium">Discover more free tools</span>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
@@ -191,15 +192,15 @@ export const ToolSeoSection: React.FC<ToolSeoSectionProps> = ({
                     onNavigateTool(tool.id);
                   }
                 }}
-                className="group p-4 rounded-xl bg-slate-900/50 hover:bg-slate-900 border border-slate-800 hover:border-red-500/40 transition-all duration-200 block"
+                className="saas-card bg-white border border-[#E5EAF2] p-4 rounded-xl hover:border-[#4F46E5] block group cursor-pointer transition-all shadow-2xs"
               >
-                <div className="flex items-center justify-between mb-1.5">
-                  <h4 className="text-sm font-semibold text-white group-hover:text-red-400 transition-colors">
+                <div className="flex items-center justify-between mb-2">
+                  <h4 className="text-sm font-semibold text-[#101828] group-hover:text-[#4F46E5] transition-colors">
                     {tool.title}
                   </h4>
-                  <ArrowRight className="w-3.5 h-3.5 text-slate-500 group-hover:text-red-400 group-hover:translate-x-0.5 transition-all" />
+                  <ArrowRight className="w-3.5 h-3.5 text-[#64748B] group-hover:text-[#4F46E5] group-hover:translate-x-0.5 transition-all" strokeWidth={2} />
                 </div>
-                <p className="text-xs text-slate-400 line-clamp-2 leading-relaxed">
+                <p className="text-xs text-[#64748B] line-clamp-2 leading-relaxed">
                   {tool.description}
                 </p>
               </a>

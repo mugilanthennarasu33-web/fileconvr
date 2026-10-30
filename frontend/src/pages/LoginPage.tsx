@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { Eye, EyeOff, Lock, Mail, ArrowRight, AlertCircle, LogIn, Sparkles } from 'lucide-react';
+import { Eye, EyeOff, Mail, AlertCircle, Zap, ShieldCheck, Smartphone } from 'lucide-react';
+import { HeroOrbitalGraphic } from '../components/HeroOrbitalGraphic';
 
 interface LoginPageProps {
   onNavigateToRegister: () => void;
@@ -29,7 +30,7 @@ export const GoogleIcon: React.FC<{ className?: string }> = ({ className = 'w-5 
 );
 
 export const LoginPage: React.FC<LoginPageProps> = ({ onNavigateToRegister, onSuccess }) => {
-  const { login, signInWithGoogle, isSupabaseConfigured } = useAuth();
+  const { login, signInWithGoogle } = useAuth();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -44,10 +45,9 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigateToRegister, onSu
     setIsGoogleLoading(true);
     try {
       await signInWithGoogle();
-      // Browser redirects to Google OAuth flow
     } catch (err: any) {
       setErrorMessage(
-        err.message || 'Failed to initiate Google Sign-In. Verify your Supabase configuration.'
+        err.message || 'Failed to initiate Google Sign-In. Verify your configuration.'
       );
       setIsGoogleLoading(false);
     }
@@ -75,160 +75,187 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigateToRegister, onSu
 
   return (
     <div className="min-h-[calc(100vh-8rem)] flex items-center justify-center px-4 py-12">
-      <div className="w-full max-w-md">
-        {/* Card Header */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-gradient-to-tr from-red-600 via-rose-500 to-amber-500 p-0.5 shadow-xl shadow-red-500/20 mb-4">
-            <div className="w-full h-full bg-slate-950 rounded-[14px] flex items-center justify-center">
-              <LogIn className="w-6 h-6 text-red-500" />
-            </div>
-          </div>
-          <h1 className="text-3xl font-extrabold tracking-tight text-white font-heading">
-            Welcome to fileconvr
-          </h1>
-          <p className="text-slate-400 mt-2 text-sm">
-            Sign in to access your cloud dashboard, persistent job history, and usage quotas.
-          </p>
-        </div>
-
-        {/* Form Container */}
-        <div className="glass-panel rounded-2xl border border-slate-800/80 bg-slate-900/60 backdrop-blur-xl p-8 shadow-2xl shadow-black/40">
-          {errorMessage && (
-            <div className="mb-6 flex items-start space-x-3 p-3.5 rounded-xl bg-red-500/10 border border-red-500/30 text-red-300 text-sm animate-in fade-in">
-              <AlertCircle className="w-5 h-5 text-red-400 shrink-0 mt-0.5" />
-              <div className="flex-1">
-                <p className="font-medium">{errorMessage}</p>
+      <div className="w-full max-w-5xl">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+          {/* Left Column: Sign In Card matching image 2 middle-center */}
+          <div className="lg:col-span-6 w-full max-w-md mx-auto">
+            <div className="saas-card p-6 sm:p-8 rounded-3xl shadow-xl border border-slate-200">
+              <div className="text-center mb-6">
+                <img src="/logo.png" alt="fileconvrt" className="h-8 sm:h-9 w-auto mx-auto mb-4 object-contain" />
+                <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 font-heading">
+                  Welcome Back
+                </h1>
+                <p className="text-xs sm:text-sm text-slate-600 mt-1 font-normal">
+                  Sign in to your account to continue
+                </p>
               </div>
-            </div>
-          )}
 
-          {/* Primary Action: Google OAuth via Supabase */}
-          <div className="space-y-4">
-            <button
-              type="button"
-              onClick={handleGoogleSignIn}
-              disabled={isGoogleLoading}
-              className="w-full py-3 px-4 rounded-xl font-semibold text-slate-100 bg-slate-800/90 hover:bg-slate-700/90 border border-slate-700/80 hover:border-slate-600 active:scale-[0.99] transition-all duration-200 shadow-lg shadow-black/20 flex items-center justify-center space-x-3 group relative overflow-hidden"
-            >
-              <div className="absolute inset-0 bg-gradient-to-r from-red-500/5 via-rose-500/5 to-amber-500/5 opacity-0 group-hover:opacity-100 transition-opacity" />
-              {isGoogleLoading ? (
-                <>
-                  <div className="w-5 h-5 border-2 border-slate-400 border-t-white rounded-full animate-spin" />
-                  <span>Connecting to Google...</span>
-                </>
-              ) : (
-                <>
-                  <GoogleIcon className="w-5 h-5 shrink-0" />
-                  <span>Continue with Google</span>
-                </>
+              {errorMessage && (
+                <div className="mb-5 flex items-start space-x-2.5 p-3 rounded-xl bg-red-50 border border-red-200 text-red-600 text-xs">
+                  <AlertCircle className="w-4 h-4 text-red-500 shrink-0 mt-0.5" strokeWidth={2} />
+                  <span>{errorMessage}</span>
+                </div>
               )}
-            </button>
 
-            {!isSupabaseConfigured && (
-              <div className="p-3 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-300 text-xs flex items-center space-x-2">
-                <Sparkles className="w-4 h-4 shrink-0 text-amber-400" />
-                <span>
-                  Supabase Auth is ready. Set <code>VITE_SUPABASE_URL</code> in <code>.env</code> to enable live Google Sign-In.
-                </span>
-              </div>
-            )}
-          </div>
-
-          {/* Divider */}
-          <div className="relative my-6">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-slate-800" />
-            </div>
-            <div className="relative flex justify-center text-xs uppercase tracking-wider">
-              <span className="bg-slate-900 px-3 text-slate-500 font-medium">
-                or sign in with password
-              </span>
-            </div>
-          </div>
-
-          <form onSubmit={handleSubmit} className="space-y-5">
-            {/* Email Input */}
-            <div>
-              <label htmlFor="login-email" className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
-                Email Address
-              </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500">
-                  <Mail className="w-4 h-4" />
-                </div>
-                <input
-                  id="login-email"
-                  type="email"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="name@example.com"
-                  className="w-full pl-10 pr-4 py-2.5 bg-slate-950/80 border border-slate-800 rounded-xl text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500 text-sm transition-all"
-                />
-              </div>
-            </div>
-
-            {/* Password Input */}
-            <div>
-              <div className="flex items-center justify-between mb-1.5">
-                <label htmlFor="login-password" className="block text-xs font-semibold text-slate-300 uppercase tracking-wider">
-                  Password
-                </label>
-              </div>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500">
-                  <Lock className="w-4 h-4" />
-                </div>
-                <input
-                  id="login-password"
-                  type={showPassword ? 'text' : 'password'}
-                  required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Enter your password"
-                  className="w-full pl-10 pr-10 py-2.5 bg-slate-950/80 border border-slate-800 rounded-xl text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500 text-sm transition-all"
-                />
+              {/* Continue with Google button */}
+              <div className="space-y-2.5 mb-5">
                 <button
                   type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-200 transition-colors"
-                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                  onClick={handleGoogleSignIn}
+                  disabled={isGoogleLoading}
+                  className="w-full py-2.5 px-4 rounded-xl font-semibold text-xs sm:text-sm text-slate-700 bg-white hover:bg-slate-50 border border-slate-200 active:scale-[0.99] transition-all duration-200 shadow-2xs flex items-center justify-center space-x-2.5 cursor-pointer"
                 >
-                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  {isGoogleLoading ? (
+                    <div className="w-4 h-4 border-2 border-slate-400 border-t-indigo-600 rounded-full animate-spin" />
+                  ) : (
+                    <GoogleIcon className="w-4 h-4 shrink-0" />
+                  )}
+                  <span>Continue with Google</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    const el = document.getElementById('login-email');
+                    if (el) el.focus();
+                  }}
+                  className="w-full py-2.5 px-4 rounded-xl font-semibold text-xs sm:text-sm text-slate-700 bg-white hover:bg-slate-50 border border-slate-200 active:scale-[0.99] transition-all duration-200 shadow-2xs flex items-center justify-center space-x-2.5 cursor-pointer"
+                >
+                  <Mail className="w-4 h-4 text-slate-500 shrink-0" />
+                  <span>Continue with Email</span>
+                </button>
+              </div>
+
+              {/* Divider */}
+              <div className="relative my-5">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-slate-200" />
+                </div>
+                <div className="relative flex justify-center text-[10px] uppercase tracking-wider">
+                  <span className="bg-white px-2 text-slate-400 font-semibold">
+                    OR
+                  </span>
+                </div>
+              </div>
+
+              {/* Credentials Form */}
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div>
+                  <label
+                    htmlFor="login-email"
+                    className="block text-xs font-semibold text-slate-700 mb-1"
+                  >
+                    Email address
+                  </label>
+                  <input
+                    id="login-email"
+                    type="email"
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="you@example.com"
+                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/40 text-xs sm:text-sm"
+                  />
+                </div>
+
+                <div>
+                  <div className="flex items-center justify-between mb-1">
+                    <label
+                      htmlFor="login-password"
+                      className="block text-xs font-semibold text-slate-700"
+                    >
+                      Password
+                    </label>
+                    <a
+                      href="#"
+                      onClick={(e) => e.preventDefault()}
+                      className="text-[11px] text-indigo-600 hover:underline"
+                    >
+                      Forgot password?
+                    </a>
+                  </div>
+                  <div className="relative">
+                    <input
+                      id="login-password"
+                      type={showPassword ? 'text' : 'password'}
+                      required
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      placeholder="Enter your password"
+                      className="w-full pl-3.5 pr-10 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/40 text-xs sm:text-sm"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 cursor-pointer"
+                    >
+                      {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
+                  </div>
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={isLoading}
+                  className="w-full py-2.5 px-4 rounded-xl font-bold text-white bg-indigo-600 hover:bg-indigo-700 shadow-sm transition-all duration-200 disabled:opacity-50 flex items-center justify-center space-x-2 text-xs sm:text-sm cursor-pointer mt-2"
+                >
+                  {isLoading ? (
+                    <span>Signing in...</span>
+                  ) : (
+                    <span>Sign In</span>
+                  )}
+                </button>
+              </form>
+
+              {/* Sign up prompt */}
+              <div className="mt-5 pt-4 border-t border-slate-100 text-center text-xs text-slate-500">
+                Don&apos;t have an account?{' '}
+                <button
+                  type="button"
+                  onClick={onNavigateToRegister}
+                  className="text-indigo-600 font-semibold hover:underline cursor-pointer"
+                >
+                  Sign up
                 </button>
               </div>
             </div>
+          </div>
 
-            {/* Submit Button */}
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="w-full py-2.5 px-4 rounded-xl font-medium text-slate-200 bg-slate-800/80 hover:bg-slate-700/80 border border-slate-700/60 active:scale-[0.99] transition-all duration-200 disabled:opacity-50 disabled:pointer-events-none flex items-center justify-center space-x-2 text-sm"
-            >
-              {isLoading ? (
-                <>
-                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                  <span>Signing In...</span>
-                </>
-              ) : (
-                <>
-                  <span>Sign in with password</span>
-                  <ArrowRight className="w-4 h-4" />
-                </>
-              )}
-            </button>
-          </form>
+          {/* Right Column: One Platform Multiple Possibilities (hidden on mobile, visible on lg) */}
+          <div className="hidden lg:flex lg:col-span-6 flex-col items-center text-center p-6">
+            <HeroOrbitalGraphic />
 
-          {/* Switch to Register */}
-          <div className="mt-6 pt-6 border-t border-slate-800/80 text-center text-sm text-slate-400">
-            Don&apos;t have an account yet?{' '}
-            <button
-              type="button"
-              onClick={onNavigateToRegister}
-              className="text-red-400 hover:text-red-300 font-semibold transition-colors"
-            >
-              Create Account
-            </button>
+            <div className="mt-6 max-w-sm">
+              <h2 className="text-xl font-extrabold text-slate-900 font-heading">
+                One Platform Multiple Possibilities
+              </h2>
+              <p className="text-xs text-slate-500 mt-1 mb-6">
+                Convert, edit and manage your files with ease.
+              </p>
+
+              <div className="space-y-3 text-left">
+                <div className="flex items-center space-x-3 text-xs font-semibold text-slate-700">
+                  <div className="w-7 h-7 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0">
+                    <Zap className="w-3.5 h-3.5" />
+                  </div>
+                  <span>Fast & Reliable</span>
+                </div>
+
+                <div className="flex items-center space-x-3 text-xs font-semibold text-slate-700">
+                  <div className="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+                    <ShieldCheck className="w-3.5 h-3.5" />
+                  </div>
+                  <span>Secure & Private</span>
+                </div>
+
+                <div className="flex items-center space-x-3 text-xs font-semibold text-slate-700">
+                  <div className="w-7 h-7 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
+                    <Smartphone className="w-3.5 h-3.5" />
+                  </div>
+                  <span>Works on Any Device</span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

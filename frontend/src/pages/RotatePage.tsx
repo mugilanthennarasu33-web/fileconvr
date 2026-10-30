@@ -8,6 +8,7 @@ import { ToolSeoSection } from '../components/ToolSeoSection';
 import { TOOLS_SEO_DATA } from '../data/seoData';
 import type { ProcessingResult, ProcessingState } from '../types';
 import { formatFileSize } from '../components/FileList';
+import { FileFormatIcon } from '../components/FileFormatIcon';
 
 interface RotatePageProps {
   onBack: () => void;
@@ -76,13 +77,18 @@ export const RotatePage: React.FC<RotatePageProps> = ({ onBack, onSelectTool }) 
       <div className="flex items-center space-x-3 mb-6">
         <button
           onClick={onBack}
-          className="p-2 rounded-xl bg-slate-900 border border-slate-800 hover:bg-slate-800 text-slate-400 hover:text-white transition-colors"
+          className="p-2 rounded-xl bg-white border border-slate-200 hover:bg-slate-50 text-slate-600 transition-colors shadow-2xs cursor-pointer"
+          title="Back to home"
         >
           <ArrowLeft className="w-4 h-4" />
         </button>
         <div>
-          <h1 className="text-2xl font-bold text-white font-heading">Rotate PDF Pages</h1>
-          <p className="text-xs text-slate-400">Permanently adjust the orientation of your document pages.</p>
+          <h1 className="text-2xl font-bold text-slate-900 font-heading">
+            Rotate PDF Pages
+          </h1>
+          <p className="text-xs text-slate-500">
+            Permanently adjust the orientation of your document pages.
+          </p>
         </div>
       </div>
 
@@ -98,29 +104,31 @@ export const RotatePage: React.FC<RotatePageProps> = ({ onBack, onSelectTool }) 
       ) : (
         <div className="space-y-6">
           {/* Selected File Card */}
-          <div className="glass-panel p-5 rounded-2xl border border-slate-800 flex items-center justify-between">
+          <div className="saas-card p-5 rounded-2xl flex items-center justify-between">
             <div className="flex items-center space-x-3 min-w-0">
-              <div className="w-10 h-10 rounded-lg bg-purple-500/10 text-purple-400 border border-purple-500/20 flex items-center justify-center flex-shrink-0">
-                <RotateCw className="w-5 h-5" />
-              </div>
+              <FileFormatIcon format="pdf" size="md" />
               <div className="min-w-0">
-                <p className="text-sm font-semibold text-white truncate">{file.name}</p>
-                <p className="text-xs text-slate-400">{formatFileSize(file.size)}</p>
+                <p className="text-sm font-semibold text-slate-900 truncate">
+                  {file.name}
+                </p>
+                <p className="text-xs text-slate-500">
+                  {formatFileSize(file.size)}
+                </p>
               </div>
             </div>
 
             <button
               onClick={() => setFile(null)}
-              className="text-xs text-slate-400 hover:text-red-400 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 transition-colors"
+              className="text-xs text-slate-600 hover:text-indigo-600 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 transition-colors cursor-pointer"
             >
               Change File
             </button>
           </div>
 
           {/* Interactive Rotation Controls */}
-          <div className="glass-panel p-6 rounded-2xl border border-slate-800 space-y-6">
+          <div className="saas-card p-6 rounded-2xl space-y-6">
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-3">
                 Rotation Angle
               </label>
 
@@ -128,13 +136,13 @@ export const RotatePage: React.FC<RotatePageProps> = ({ onBack, onSelectTool }) 
                 <button
                   type="button"
                   onClick={() => setAngle(90)}
-                  className={`p-4 rounded-xl border flex flex-col items-center justify-center space-y-2 transition-all ${
+                  className={`p-4 rounded-xl border flex flex-col items-center justify-center space-y-2 transition-all cursor-pointer ${
                     angle === 90
-                      ? 'border-red-500 bg-red-500/10 text-white shadow-lg shadow-red-500/10'
-                      : 'border-slate-800 bg-slate-900/60 hover:bg-slate-800 text-slate-300'
+                      ? 'border-indigo-600 bg-indigo-50 text-indigo-600 shadow-sm'
+                      : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300'
                   }`}
                 >
-                  <RotateCw className="w-6 h-6 text-red-400" />
+                  <RotateCw className="w-6 h-6 text-indigo-600" />
                   <span className="text-sm font-bold">90° Right</span>
                   <span className="text-[11px] text-slate-400">Clockwise</span>
                 </button>
@@ -142,13 +150,13 @@ export const RotatePage: React.FC<RotatePageProps> = ({ onBack, onSelectTool }) 
                 <button
                   type="button"
                   onClick={() => setAngle(180)}
-                  className={`p-4 rounded-xl border flex flex-col items-center justify-center space-y-2 transition-all ${
+                  className={`p-4 rounded-xl border flex flex-col items-center justify-center space-y-2 transition-all cursor-pointer ${
                     angle === 180
-                      ? 'border-red-500 bg-red-500/10 text-white shadow-lg shadow-red-500/10'
-                      : 'border-slate-800 bg-slate-900/60 hover:bg-slate-800 text-slate-300'
+                      ? 'border-indigo-600 bg-indigo-50 text-indigo-600 shadow-sm'
+                      : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300'
                   }`}
                 >
-                  <RefreshCw className="w-6 h-6 text-red-400" />
+                  <RefreshCw className="w-6 h-6 text-indigo-600" />
                   <span className="text-sm font-bold">180° Flip</span>
                   <span className="text-[11px] text-slate-400">Upside Down</span>
                 </button>
@@ -156,13 +164,13 @@ export const RotatePage: React.FC<RotatePageProps> = ({ onBack, onSelectTool }) 
                 <button
                   type="button"
                   onClick={() => setAngle(270)}
-                  className={`p-4 rounded-xl border flex flex-col items-center justify-center space-y-2 transition-all ${
+                  className={`p-4 rounded-xl border flex flex-col items-center justify-center space-y-2 transition-all cursor-pointer ${
                     angle === 270
-                      ? 'border-red-500 bg-red-500/10 text-white shadow-lg shadow-red-500/10'
-                      : 'border-slate-800 bg-slate-900/60 hover:bg-slate-800 text-slate-300'
+                      ? 'border-indigo-600 bg-indigo-50 text-indigo-600 shadow-sm'
+                      : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300'
                   }`}
                 >
-                  <RotateCcw className="w-6 h-6 text-red-400" />
+                  <RotateCcw className="w-6 h-6 text-indigo-600" />
                   <span className="text-sm font-bold">90° Left</span>
                   <span className="text-[11px] text-slate-400">Counter-Clockwise</span>
                 </button>
@@ -170,8 +178,8 @@ export const RotatePage: React.FC<RotatePageProps> = ({ onBack, onSelectTool }) 
             </div>
 
             {/* Target Filter */}
-            <div className="pt-4 border-t border-slate-800/80">
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">
+            <div className="pt-4 border-t border-slate-100">
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-3">
                 Apply Rotation To:
               </label>
 
@@ -181,10 +189,10 @@ export const RotatePage: React.FC<RotatePageProps> = ({ onBack, onSelectTool }) 
                     key={t}
                     type="button"
                     onClick={() => setTarget(t)}
-                    className={`px-4 py-2 rounded-xl text-xs font-semibold uppercase tracking-wider transition-all ${
+                    className={`px-4 py-2 rounded-xl text-xs font-semibold uppercase tracking-wider transition-all cursor-pointer ${
                       target === t
-                        ? 'bg-red-500/20 text-red-400 border border-red-500/40'
-                        : 'bg-slate-900 text-slate-400 hover:text-white border border-slate-800'
+                        ? 'bg-indigo-600 text-white shadow-2xs'
+                        : 'bg-white text-slate-600 hover:bg-slate-50 border border-slate-200'
                     }`}
                   >
                     {t === 'all' ? 'All Pages' : t === 'portrait' ? 'Only Portrait Pages' : 'Only Landscape Pages'}
@@ -196,24 +204,24 @@ export const RotatePage: React.FC<RotatePageProps> = ({ onBack, onSelectTool }) 
 
           {/* Error Notice */}
           {error && (
-            <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/30 flex items-center space-x-3 text-red-400 text-sm">
-              <AlertCircle className="w-5 h-5 flex-shrink-0" />
+            <div className="p-4 rounded-xl bg-red-50 border border-red-200 flex items-center space-x-3 text-red-600 text-sm">
+              <AlertCircle className="w-5 h-5 shrink-0" strokeWidth={2} />
               <span>{error}</span>
             </div>
           )}
 
           {/* Actions */}
-          <div className="pt-4 flex flex-col sm:flex-row items-center justify-end gap-3 border-t border-slate-800">
+          <div className="pt-4 flex flex-col sm:flex-row items-center justify-end gap-3 border-t border-slate-200">
             <button
               onClick={handleReset}
-              className="w-full sm:w-auto px-5 py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 text-sm font-semibold border border-slate-800"
+              className="w-full sm:w-auto px-5 py-3 rounded-xl bg-white hover:bg-slate-50 text-slate-700 text-sm font-semibold border border-slate-200 cursor-pointer transition-colors"
             >
               Cancel
             </button>
 
             <button
               onClick={handleRotate}
-              className="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-gradient-to-r from-red-600 via-rose-600 to-amber-600 hover:from-red-500 hover:to-amber-500 text-white font-bold text-sm shadow-xl shadow-red-500/25 hover:shadow-red-500/40 transition-all cursor-pointer"
+              className="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm shadow-md shadow-indigo-500/25 transition-all cursor-pointer"
             >
               Rotate PDF →
             </button>
@@ -222,7 +230,7 @@ export const RotatePage: React.FC<RotatePageProps> = ({ onBack, onSelectTool }) 
       )}
 
       {/* Processing Modal */}
-      <ProcessingModal state={state} />
+      <ProcessingModal state={state} sourceFormat="pdf" targetFormat="pdf" />
 
       {/* Educational SEO & FAQ Section */}
       <ToolSeoSection

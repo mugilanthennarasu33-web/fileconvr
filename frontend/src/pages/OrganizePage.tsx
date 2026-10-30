@@ -54,7 +54,6 @@ export const OrganizePage: React.FC<OrganizePageProps> = ({ onBack, onSelectTool
     const loadDoc = async () => {
       try {
         const pdfjsLib = await import('pdfjs-dist');
-        // Set worker source
         pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.mjs`;
 
         const arrayBuffer = await file.arrayBuffer();
@@ -96,7 +95,6 @@ export const OrganizePage: React.FC<OrganizePageProps> = ({ onBack, onSelectTool
         }
       } catch (err: any) {
         console.warn('PDF.js thumbnail rendering fallback to metadata placeholder:', err);
-        // Fallback: estimate page count from ArrayBuffer or simple 3-page template
         const fallbackPages: PageItem[] = Array.from({ length: 3 }, (_, idx) => ({
           id: `page-${idx}-${Date.now()}`,
           originalIndex: idx,
@@ -124,50 +122,6 @@ export const OrganizePage: React.FC<OrganizePageProps> = ({ onBack, onSelectTool
     }
   };
 
-  const handleMove = (fromIndex: number, toIndex: number) => {
-    if (toIndex < 0 || toIndex >= pages.length) return;
-    const updated = [...pages];
-    const [moved] = updated.splice(fromIndex, 1);
-    updated.splice(toIndex, 0, moved);
-    setPages(updated);
-  };
-
-  const handleRotatePage = (index: number, deltaAngle: number) => {
-    setPages((prev) => {
-      const updated = [...prev];
-      const current = updated[index].rotation || 0;
-      const nextAngle = (((current + deltaAngle) % 360) + 360) % 360;
-      updated[index] = { ...updated[index], rotation: nextAngle };
-      return updated;
-    });
-  };
-
-  const handleDuplicatePage = (index: number) => {
-    const item = pages[index];
-    const newItem: PageItem = {
-      ...item,
-      id: `copy-${Date.now()}-${Math.random()}`,
-    };
-    const updated = [...pages];
-    updated.splice(index + 1, 0, newItem);
-    setPages(updated);
-  };
-
-  const handleDeletePage = (index: number) => {
-    if (pages.length <= 1) {
-      setError('Cannot delete every page. At least one page must remain in the document.');
-      return;
-    }
-    const targetId = pages[index].id;
-    setPages((prev) => prev.filter((_, idx) => idx !== index));
-    setSelectedIds((prev) => {
-      const next = new Set(prev);
-      next.delete(targetId);
-      return next;
-    });
-    setError(null);
-  };
-
   const handleToggleSelect = (id: string) => {
     setSelectedIds((prev) => {
       const next = new Set(prev);
@@ -185,41 +139,77 @@ export const OrganizePage: React.FC<OrganizePageProps> = ({ onBack, onSelectTool
     }
   };
 
+  const handleRotatePage = (index: number, degDelta: number = 90) => {
+    setPages((prev) =>
+      prev.map((p, idx) =>
+        idx === index ? { ...p, rotation: ((p.rotation + degDelta) % 360) as 0 | 90 | 180 | 270 } : p
+      )
+    );
+  };
+
+  const handleRotateSelected = (degDelta: number = 90) => {
+    setPages((prev) =>
+      prev.map((p) =>
+        selectedIds.has(p.id) ? { ...p, rotation: ((p.rotation + degDelta) % 360) as 0 | 90 | 180 | 270 } : p
+      )
+    );
+  };
+
+  const handleDeletePage = (index: number) => {
+    if (pages.length <= 1) {
+      setError('A PDF document must retain at least one page.');
+      return;
+    }
+    const pageId = pages[index].id;
+    setPages((prev) => prev.filter((_, idx) => idx !== index));
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      next.delete(pageId);
+      return next;
+    });
+  };
+
   const handleDeleteSelected = () => {
     if (selectedIds.size >= pages.length) {
-      setError('Cannot delete every page. At least one page must remain in the document.');
+      setError('Cannot delete all pages. At least one page must remain.');
       return;
     }
     setPages((prev) => prev.filter((p) => !selectedIds.has(p.id)));
     setSelectedIds(new Set());
-    setError(null);
   };
 
-  const handleRotateSelected = (deltaAngle: number) => {
-    setPages((prev) =>
-      prev.map((p) => {
-        if (!selectedIds.has(p.id)) return p;
-        const current = p.rotation || 0;
-        const nextAngle = (((current + deltaAngle) % 360) + 360) % 360;
-        return { ...p, rotation: nextAngle };
-      })
-    );
+  const handleDuplicatePage = (index: number) => {
+    const pageToDup = pages[index];
+    const newPage: PageItem = {
+      ...pageToDup,
+      id: `dup-${pageToDup.id}-${Date.now()}`,
+    };
+    const nextPages = [...pages];
+    nextPages.splice(index + 1, 0, newPage);
+    setPages(nextPages);
+  };
+
+  const handleMove = (from: number, to: number) => {
+    if (to < 0 || to >= pages.length) return;
+    const next = [...pages];
+    const [moved] = next.splice(from, 1);
+    next.splice(to, 0, moved);
+    setPages(next);
   };
 
   const handleReset = () => {
-    setPages([...initialPages]);
+    setPages(initialPages);
     setSelectedIds(new Set());
     setError(null);
   };
 
   const handleOrganize = async () => {
     if (!file) {
-      setError('Please upload a PDF file first.');
+      setError('Please select a PDF document first.');
       return;
     }
-
     if (pages.length === 0) {
-      setError('At least one page must remain in the organized document.');
+      setError('At least one page is required.');
       return;
     }
 
@@ -262,20 +252,20 @@ export const OrganizePage: React.FC<OrganizePageProps> = ({ onBack, onSelectTool
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
         <div className="flex items-center space-x-3">
           <button
             onClick={onBack}
-            className="p-2 rounded-xl bg-slate-900 border border-slate-800 hover:bg-slate-800 text-slate-400 hover:text-white transition-colors"
+            className="p-2 rounded-xl bg-white border border-slate-200 hover:bg-slate-50 text-slate-600 transition-colors shadow-2xs cursor-pointer"
           >
             <ArrowLeft className="w-4 h-4" />
           </button>
           <div>
-            <h1 className="text-2xl font-bold text-white font-heading flex items-center gap-2">
-              <Layers className="w-6 h-6 text-brand-500" />
+            <h1 className="text-2xl font-bold text-slate-900 font-heading flex items-center gap-2">
+              <Layers className="w-6 h-6 text-indigo-600" />
               Organize PDF Pages
             </h1>
-            <p className="text-xs text-slate-400">
+            <p className="text-xs text-slate-500">
               Drag to reorder, rotate individual pages, duplicate, or delete with visual canvas previews.
             </p>
           </div>
@@ -285,7 +275,7 @@ export const OrganizePage: React.FC<OrganizePageProps> = ({ onBack, onSelectTool
           <div className="flex items-center gap-2">
             <button
               onClick={handleReset}
-              className="px-3 py-1.5 rounded-lg border border-slate-700 bg-slate-800/80 hover:bg-slate-700 text-xs text-slate-300 font-medium flex items-center gap-1.5 transition-all"
+              className="px-3 py-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-xs text-slate-700 font-medium flex items-center gap-1.5 transition-all cursor-pointer shadow-2xs"
             >
               <ResetIcon className="w-3.5 h-3.5" />
               Reset All
@@ -293,7 +283,7 @@ export const OrganizePage: React.FC<OrganizePageProps> = ({ onBack, onSelectTool
             <button
               onClick={handleOrganize}
               disabled={pages.length === 0}
-              className="px-5 py-2 rounded-xl bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-500 hover:to-indigo-500 text-white font-semibold text-sm shadow-lg shadow-brand-500/20 transition-all flex items-center gap-2"
+              className="px-5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs sm:text-sm shadow-md shadow-indigo-500/20 transition-all flex items-center gap-2 cursor-pointer disabled:opacity-50"
             >
               Save & Organize PDF ({pages.length} Pages)
             </button>
@@ -313,39 +303,39 @@ export const OrganizePage: React.FC<OrganizePageProps> = ({ onBack, onSelectTool
       ) : (
         <div className="space-y-6">
           {/* Action Toolbar */}
-          <div className="glass-panel p-4 rounded-xl border border-slate-800 flex flex-wrap items-center justify-between gap-4">
+          <div className="saas-card p-4 rounded-2xl border border-slate-200 flex flex-wrap items-center justify-between gap-4">
             <div className="flex items-center gap-2">
               <button
                 onClick={handleSelectAll}
-                className="px-3 py-1.5 rounded-lg border border-slate-700 hover:bg-slate-800 text-xs text-slate-300 flex items-center gap-1.5"
+                className="px-3 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-xs text-slate-700 flex items-center gap-1.5 cursor-pointer"
               >
                 {selectedIds.size === pages.length && pages.length > 0 ? (
                   <>
-                    <Square className="w-3.5 h-3.5 text-brand-400" /> Clear All
+                    <Square className="w-3.5 h-3.5 text-indigo-600" /> Clear All
                   </>
                 ) : (
                   <>
-                    <CheckSquare className="w-3.5 h-3.5 text-brand-400" /> Select All ({pages.length})
+                    <CheckSquare className="w-3.5 h-3.5 text-indigo-600" /> Select All ({pages.length})
                   </>
                 )}
               </button>
 
               {selectedIds.size > 0 && (
                 <>
-                  <div className="h-4 w-px bg-slate-700 mx-1" />
-                  <span className="text-xs text-brand-400 font-medium">
+                  <div className="h-4 w-px bg-slate-200 mx-1" />
+                  <span className="text-xs text-indigo-600 font-medium">
                     {selectedIds.size} page{selectedIds.size > 1 ? 's' : ''} selected:
                   </span>
                   <button
                     onClick={() => handleRotateSelected(90)}
-                    className="px-2.5 py-1 rounded-lg border border-slate-700 hover:bg-slate-800 text-xs text-slate-300 flex items-center gap-1"
+                    className="px-2.5 py-1 rounded-lg border border-slate-200 hover:bg-slate-50 text-xs text-slate-700 flex items-center gap-1 cursor-pointer"
                     title="Rotate selected 90° clockwise"
                   >
-                    <RotateCw className="w-3 h-3 text-purple-400" /> Rotate 90°
+                    <RotateCw className="w-3 h-3 text-purple-600" /> Rotate 90°
                   </button>
                   <button
                     onClick={handleDeleteSelected}
-                    className="px-2.5 py-1 rounded-lg border border-red-500/30 hover:bg-red-500/10 text-xs text-red-400 flex items-center gap-1"
+                    className="px-2.5 py-1 rounded-lg border border-red-200 hover:bg-red-50 text-xs text-red-600 flex items-center gap-1 cursor-pointer"
                     title="Delete selected pages"
                   >
                     <Trash2 className="w-3 h-3" /> Delete ({selectedIds.size})
@@ -354,17 +344,17 @@ export const OrganizePage: React.FC<OrganizePageProps> = ({ onBack, onSelectTool
               )}
             </div>
 
-            <div className="text-xs text-slate-400 flex items-center gap-2">
+            <div className="text-xs text-slate-500 flex items-center gap-2">
               <span>Original: {initialPages.length} pages</span>
               <span>•</span>
-              <span className="text-white font-medium">Final: {pages.length} pages</span>
+              <span className="text-slate-900 font-medium">Final: {pages.length} pages</span>
             </div>
           </div>
 
           {/* Error / Warning Alert */}
           {error && (
-            <div className="p-4 rounded-xl border border-red-500/30 bg-red-500/10 text-red-300 text-xs flex items-center gap-2">
-              <AlertTriangle className="w-4 h-4 flex-shrink-0 text-red-400" />
+            <div className="p-4 rounded-xl border border-red-200 bg-red-50 text-red-600 text-xs flex items-center gap-2">
+              <AlertTriangle className="w-4 h-4 flex-shrink-0 text-red-500" />
               <span>{error}</span>
             </div>
           )}
@@ -372,8 +362,8 @@ export const OrganizePage: React.FC<OrganizePageProps> = ({ onBack, onSelectTool
           {/* Page Grid */}
           {loadingPdf ? (
             <div className="text-center py-20">
-              <div className="inline-block animate-spin w-8 h-8 border-2 border-brand-500 border-t-transparent rounded-full mb-3" />
-              <p className="text-sm text-slate-400">Rendering visual page thumbnails with PDF.js...</p>
+              <div className="inline-block animate-spin w-8 h-8 border-2 border-indigo-600 border-t-transparent rounded-full mb-3" />
+              <p className="text-sm text-slate-500">Rendering visual page thumbnails with PDF.js...</p>
             </div>
           ) : (
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
@@ -391,68 +381,68 @@ export const OrganizePage: React.FC<OrganizePageProps> = ({ onBack, onSelectTool
                         setDraggedIdx(null);
                       }
                     }}
-                    className={`relative group rounded-xl border transition-all duration-200 bg-slate-900/90 flex flex-col overflow-hidden ${
+                    className={`relative group rounded-2xl border transition-all duration-200 bg-white flex flex-col overflow-hidden shadow-2xs ${
                       isSelected
-                        ? 'border-brand-500 ring-2 ring-brand-500/30 shadow-lg shadow-brand-500/10'
-                        : 'border-slate-800 hover:border-slate-700'
+                        ? 'border-indigo-600 ring-2 ring-indigo-500/30 shadow-md'
+                        : 'border-slate-200 hover:border-indigo-400'
                     }`}
                   >
                     {/* Page header bar */}
-                    <div className="px-2.5 py-1.5 bg-slate-800/80 flex items-center justify-between text-xs">
+                    <div className="px-2.5 py-1.5 bg-slate-50 flex items-center justify-between text-xs border-b border-slate-100">
                       <div className="flex items-center gap-1.5">
                         <button
                           type="button"
                           onClick={() => handleToggleSelect(pageItem.id)}
-                          className="text-slate-400 hover:text-white"
+                          className="text-slate-400 hover:text-slate-700 cursor-pointer"
                         >
                           {isSelected ? (
-                            <CheckSquare className="w-3.5 h-3.5 text-brand-400" />
+                            <CheckSquare className="w-3.5 h-3.5 text-indigo-600" />
                           ) : (
                             <Square className="w-3.5 h-3.5" />
                           )}
                         </button>
-                        <span className="font-semibold text-white">#{index + 1}</span>
+                        <span className="font-semibold text-slate-900">#{index + 1}</span>
                       </div>
                       <span className="text-[10px] text-slate-400">Orig: {pageItem.originalIndex + 1}</span>
                     </div>
 
                     {/* Thumbnail Viewport */}
-                    <div className="p-3 flex items-center justify-center bg-slate-950 min-h-[160px] relative overflow-hidden">
+                    <div className="p-3 flex items-center justify-center bg-slate-100/60 min-h-[160px] relative overflow-hidden">
                       {pageItem.thumbnailUrl ? (
                         <img
                           src={pageItem.thumbnailUrl}
                           alt={`Page ${index + 1}`}
-                          className="max-h-36 max-w-full rounded shadow-md object-contain transition-transform duration-300"
+                          className="max-h-36 max-w-full rounded shadow-sm object-contain transition-transform duration-300"
                           style={{
                             transform: `rotate(${pageItem.rotation}deg)`,
                           }}
                         />
                       ) : (
                         <div
-                          className="w-24 h-32 bg-slate-800 rounded border border-slate-700 flex flex-col items-center justify-center text-slate-400 gap-1.5 transition-transform"
+                          className="w-24 h-32 bg-white rounded border border-slate-200 flex flex-col items-center justify-center text-slate-500 gap-1.5 transition-transform"
                           style={{ transform: `rotate(${pageItem.rotation}deg)` }}
                         >
-                          <FileText className="w-6 h-6 text-slate-500" />
+                          <FileText className="w-6 h-6 text-slate-400" />
                           <span className="text-[11px] font-medium">Page {pageItem.originalIndex + 1}</span>
                         </div>
                       )}
 
                       {/* Rotation indicator badge */}
                       {pageItem.rotation !== 0 && (
-                        <div className="absolute top-2 right-2 bg-purple-600 text-white text-[9px] font-bold px-1.5 py-0.5 rounded shadow">
+                        <div className="absolute top-2 right-2 bg-indigo-600 text-white text-[9px] font-bold px-1.5 py-0.5 rounded shadow">
                           {pageItem.rotation}°
                         </div>
                       )}
                     </div>
 
                     {/* Hover Page Controls */}
-                    <div className="px-2 py-2 bg-slate-900 border-t border-slate-800/80 flex items-center justify-between gap-1">
+                    <div className="px-2 py-2 bg-white border-t border-slate-100 flex items-center justify-between gap-1">
                       <div className="flex items-center gap-1">
                         <button
                           type="button"
                           disabled={index === 0}
                           onClick={() => handleMove(index, index - 1)}
-                          className="p-1 rounded hover:bg-slate-800 text-slate-400 hover:text-white disabled:opacity-30 disabled:hover:bg-transparent"
+                          className="p-1 rounded hover:bg-slate-100 text-slate-400 hover:text-slate-700 disabled:opacity-30 cursor-pointer"
                           title="Move left"
                         >
                           <ChevronLeft className="w-3.5 h-3.5" />
@@ -461,7 +451,7 @@ export const OrganizePage: React.FC<OrganizePageProps> = ({ onBack, onSelectTool
                           type="button"
                           disabled={index === pages.length - 1}
                           onClick={() => handleMove(index, index + 1)}
-                          className="p-1 rounded hover:bg-slate-800 text-slate-400 hover:text-white disabled:opacity-30 disabled:hover:bg-transparent"
+                          className="p-1 rounded hover:bg-slate-100 text-slate-400 hover:text-slate-700 disabled:opacity-30 cursor-pointer"
                           title="Move right"
                         >
                           <ChevronRight className="w-3.5 h-3.5" />
@@ -472,7 +462,7 @@ export const OrganizePage: React.FC<OrganizePageProps> = ({ onBack, onSelectTool
                         <button
                           type="button"
                           onClick={() => handleRotatePage(index, 90)}
-                          className="p-1 rounded hover:bg-slate-800 text-purple-400 hover:text-purple-300"
+                          className="p-1 rounded hover:bg-slate-100 text-purple-600 hover:text-purple-700 cursor-pointer"
                           title="Rotate 90°"
                         >
                           <RotateCw className="w-3.5 h-3.5" />
@@ -480,7 +470,7 @@ export const OrganizePage: React.FC<OrganizePageProps> = ({ onBack, onSelectTool
                         <button
                           type="button"
                           onClick={() => handleDuplicatePage(index)}
-                          className="p-1 rounded hover:bg-slate-800 text-blue-400 hover:text-blue-300"
+                          className="p-1 rounded hover:bg-slate-100 text-blue-600 hover:text-blue-700 cursor-pointer"
                           title="Duplicate page"
                         >
                           <Copy className="w-3.5 h-3.5" />
@@ -488,7 +478,7 @@ export const OrganizePage: React.FC<OrganizePageProps> = ({ onBack, onSelectTool
                         <button
                           type="button"
                           onClick={() => handleDeletePage(index)}
-                          className="p-1 rounded hover:bg-red-500/20 text-red-400 hover:text-red-300"
+                          className="p-1 rounded hover:bg-red-50 text-red-500 hover:text-red-700 cursor-pointer"
                           title="Delete page"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
@@ -506,6 +496,8 @@ export const OrganizePage: React.FC<OrganizePageProps> = ({ onBack, onSelectTool
       <ProcessingModal
         state={state}
         statusMessage="Rebuilding page sequence, applying orientations, and generating valid PDF..."
+        sourceFormat="pdf"
+        targetFormat="pdf"
       />
 
       {/* Educational SEO & FAQ Section */}

@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import {
   ArrowLeft,
-  ScanText,
   Languages,
   CheckCircle2,
   AlertCircle,
@@ -18,6 +17,8 @@ import { ocrPdfApi } from '../services/api';
 import { ToolSeoSection } from '../components/ToolSeoSection';
 import { TOOLS_SEO_DATA } from '../data/seoData';
 import type { OcrResultData, ProcessingState } from '../types';
+import { FileFormatIcon } from '../components/FileFormatIcon';
+import { formatFileSize } from '../components/FileList';
 
 interface OcrPageProps {
   onBack: () => void;
@@ -89,20 +90,20 @@ export const OcrPage: React.FC<OcrPageProps> = ({ onBack, onSelectTool }) => {
       <div className="flex items-center space-x-4 mb-8">
         <button
           onClick={onBack}
-          className="p-2 rounded-xl bg-slate-900/60 hover:bg-slate-800 border border-slate-800 text-slate-400 hover:text-white transition-colors"
+          className="p-2 rounded-xl bg-white border border-slate-200 hover:bg-slate-50 text-slate-600 transition-colors shadow-2xs cursor-pointer"
         >
           <ArrowLeft className="w-5 h-5" />
         </button>
         <div>
           <div className="flex items-center space-x-2">
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 font-heading tracking-tight">
               OCR PDF
             </h1>
-            <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-red-500/10 text-red-400 border border-red-500/20">
+            <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200">
               Searchable PDF
             </span>
           </div>
-          <p className="text-sm text-slate-400 mt-1">
+          <p className="text-xs sm:text-sm text-slate-500 mt-1">
             Detect scanned pages, recognize multi-lingual typography, and generate a fully searchable PDF.
           </p>
         </div>
@@ -110,11 +111,11 @@ export const OcrPage: React.FC<OcrPageProps> = ({ onBack, onSelectTool }) => {
 
       {/* Error alert */}
       {error && (
-        <div className="mb-6 p-4 rounded-xl bg-red-500/10 border border-red-500/20 flex items-start space-x-3 text-red-400">
-          <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
-          <div className="text-sm">
+        <div className="mb-6 p-4 rounded-xl bg-red-50 border border-red-200 flex items-start space-x-3 text-red-600 text-sm">
+          <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5 text-red-500" />
+          <div>
             <p className="font-semibold">OCR Notice</p>
-            <p className="text-slate-300 mt-0.5">{error}</p>
+            <p className="text-xs text-slate-600 mt-0.5">{error}</p>
           </div>
         </div>
       )}
@@ -133,45 +134,43 @@ export const OcrPage: React.FC<OcrPageProps> = ({ onBack, onSelectTool }) => {
           ) : (
             <div className="space-y-6">
               {/* Selected File Card */}
-              <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800 flex items-center justify-between">
+              <div className="saas-card p-4 rounded-2xl border border-slate-200 flex items-center justify-between">
                 <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 rounded-lg bg-red-500/10 border border-red-500/20 flex items-center justify-center text-red-400">
-                    <ScanText className="w-5 h-5" />
-                  </div>
+                  <FileFormatIcon format="pdf" size="md" />
                   <div>
-                    <p className="text-sm font-semibold text-white truncate max-w-sm sm:max-w-md">
+                    <p className="text-sm font-semibold text-slate-900 truncate max-w-sm sm:max-w-md">
                       {file.name}
                     </p>
-                    <p className="text-xs text-slate-400 mt-0.5">
-                      {(file.size / (1024 * 1024)).toFixed(2)} MB • Ready for text recognition
+                    <p className="text-xs text-slate-500 mt-0.5">
+                      {formatFileSize(file.size)} • Ready for text recognition
                     </p>
                   </div>
                 </div>
                 <button
                   onClick={() => setFile(null)}
-                  className="text-xs text-slate-400 hover:text-white px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 transition-colors"
+                  className="text-xs text-slate-600 hover:text-indigo-600 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 transition-colors cursor-pointer"
                 >
                   Change file
                 </button>
               </div>
 
               {/* OCR Configuration Options */}
-              <div className="p-6 rounded-2xl bg-slate-900/60 border border-slate-800 space-y-6">
-                <h3 className="text-sm font-semibold text-slate-300 uppercase tracking-wider flex items-center space-x-2">
-                  <Languages className="w-4 h-4 text-red-400" />
+              <div className="saas-card p-6 rounded-2xl border border-slate-200 space-y-6">
+                <h3 className="text-sm font-semibold text-slate-700 uppercase tracking-wider flex items-center space-x-2">
+                  <Languages className="w-4 h-4 text-indigo-600" />
                   <span>Recognition Settings</span>
                 </h3>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {/* Language Selector */}
                   <div>
-                    <label className="block text-xs font-medium text-slate-400 mb-1.5">
+                    <label className="block text-xs font-medium text-slate-600 mb-1.5">
                       Document Language
                     </label>
                     <select
                       value={language}
                       onChange={(e) => setLanguage(e.target.value)}
-                      className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm text-slate-200 focus:outline-none focus:border-red-500 transition-colors"
+                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 focus:outline-none focus:border-indigo-600 transition-colors"
                     >
                       {SUPPORTED_LANGUAGES.map((lang) => (
                         <option key={lang.code} value={lang.code}>
@@ -179,7 +178,7 @@ export const OcrPage: React.FC<OcrPageProps> = ({ onBack, onSelectTool }) => {
                         </option>
                       ))}
                     </select>
-                    <p className="text-[11px] text-slate-500 mt-1">
+                    <p className="text-[11px] text-slate-400 mt-1">
                       Selecting the native language enhances word recognition precision.
                     </p>
                   </div>
@@ -191,21 +190,21 @@ export const OcrPage: React.FC<OcrPageProps> = ({ onBack, onSelectTool }) => {
                         type="checkbox"
                         checked={forceAllPages}
                         onChange={(e) => setForceAllPages(e.target.checked)}
-                        className="w-4 h-4 rounded text-red-600 bg-slate-950 border-slate-700 focus:ring-red-500 focus:ring-offset-slate-900"
+                        className="w-4 h-4 rounded text-indigo-600 bg-white border-slate-300 focus:ring-indigo-500"
                       />
-                      <span className="text-sm text-slate-300 font-medium">
+                      <span className="text-xs sm:text-sm text-slate-700 font-medium">
                         Force OCR on all pages
                       </span>
                     </label>
-                    <p className="text-[11px] text-slate-500 mt-1 pl-7">
-                      By default, fileconvr automatically inspects and OCRs pages with &lt; 30 characters of text.
+                    <p className="text-[11px] text-slate-400 mt-1 pl-7">
+                      By default, fileconvrt automatically inspects and OCRs pages with &lt; 30 characters of text.
                     </p>
                   </div>
                 </div>
 
                 {/* Transparency Notice */}
-                <div className="p-3.5 rounded-xl bg-slate-950 border border-slate-800/80 flex items-start space-x-2.5 text-xs text-slate-400">
-                  <Info className="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5" />
+                <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 flex items-start space-x-2.5 text-xs text-slate-500">
+                  <Info className="w-4 h-4 text-amber-500 flex-shrink-0 mt-0.5" />
                   <p>
                     Searchable text is embedded as an invisible PDF text layer (spec render mode 3). Your original page dimensions, images, formatting, and colors are preserved 100%.
                   </p>
@@ -215,27 +214,29 @@ export const OcrPage: React.FC<OcrPageProps> = ({ onBack, onSelectTool }) => {
               {/* Action Button */}
               <button
                 onClick={handleOcr}
-                className="w-full py-3.5 rounded-xl bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-semibold shadow-lg shadow-red-500/20 hover:shadow-red-500/30 transition-all flex items-center justify-center space-x-2"
+                className="w-full py-3.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold shadow-md shadow-indigo-500/20 transition-all flex items-center justify-center space-x-2 cursor-pointer"
               >
                 <Sparkles className="w-5 h-5" />
-                <span>Start OCR &amp; Make Searchable</span>
+                <span>Execute High-Fidelity OCR</span>
               </button>
             </div>
           )}
         </div>
       ) : (
-        /* Success & Text Preview View */
+        /* Success View */
         <div className="space-y-6">
-          <div className="p-6 rounded-2xl bg-slate-900/60 border border-slate-800 space-y-6">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-800">
+          <div className="saas-card p-6 rounded-2xl border border-slate-200 space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-100">
               <div className="flex items-center space-x-3">
-                <div className="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+                <div className="w-12 h-12 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-600">
                   <CheckCircle2 className="w-6 h-6" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-white">OCR Completed Successfully</h3>
-                  <p className="text-xs text-slate-400 mt-0.5">
-                    {result?.pagesOcred} page(s) processed in {result?.languageName} • {result?.wordsExtracted} words extracted
+                  <h3 className="text-lg font-bold text-slate-900 font-heading">
+                    OCR Recognition Complete
+                  </h3>
+                  <p className="text-xs text-slate-500 mt-0.5">
+                    {result?.pagesOcred ?? result?.pageCount} pages recognized • Language: {result?.language.toUpperCase()}
                   </p>
                 </div>
               </div>
@@ -243,7 +244,7 @@ export const OcrPage: React.FC<OcrPageProps> = ({ onBack, onSelectTool }) => {
               <div className="flex items-center space-x-2.5">
                 <button
                   onClick={handleReset}
-                  className="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-medium text-slate-300 transition-colors flex items-center space-x-1.5"
+                  className="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-xs font-semibold text-slate-700 transition-colors flex items-center space-x-1.5 cursor-pointer"
                 >
                   <RotateCcw className="w-3.5 h-3.5" />
                   <span>OCR another</span>
@@ -251,7 +252,7 @@ export const OcrPage: React.FC<OcrPageProps> = ({ onBack, onSelectTool }) => {
                 <a
                   href={result?.downloadUrl}
                   download={result?.outputFilename}
-                  className="px-5 py-2.5 rounded-xl bg-red-600 hover:bg-red-500 text-white text-sm font-semibold shadow-lg shadow-red-500/20 hover:shadow-red-500/30 transition-all flex items-center space-x-2"
+                  className="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs sm:text-sm font-semibold shadow-md shadow-emerald-500/20 transition-all flex items-center space-x-2"
                 >
                   <Download className="w-4 h-4" />
                   <span>Download Searchable PDF</span>
@@ -259,43 +260,34 @@ export const OcrPage: React.FC<OcrPageProps> = ({ onBack, onSelectTool }) => {
               </div>
             </div>
 
-            {/* Extracted Text Preview Pane */}
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
-                  Extracted Text Preview
-                </label>
-                <button
-                  onClick={handleCopyText}
-                  className="text-xs px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition-colors flex items-center space-x-1.5"
-                >
-                  {copied ? (
-                    <>
-                      <Check className="w-3.5 h-3.5 text-emerald-400" />
-                      <span className="text-emerald-400">Copied!</span>
-                    </>
-                  ) : (
-                    <>
-                      <Copy className="w-3.5 h-3.5" />
-                      <span>Copy text</span>
-                    </>
-                  )}
-                </button>
-              </div>
+            {/* Extracted Text Preview Card */}
+            {result?.extractedText && (
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-semibold text-slate-700 uppercase tracking-wider">
+                    Extracted Text Preview
+                  </span>
+                  <button
+                    onClick={handleCopyText}
+                    className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-medium transition-colors cursor-pointer"
+                  >
+                    {copied ? (
+                      <>
+                        <Check className="w-3.5 h-3.5 text-emerald-500" />
+                        <span>Copied!</span>
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="w-3.5 h-3.5" />
+                        <span>Copy Text</span>
+                      </>
+                    )}
+                  </button>
+                </div>
 
-              <textarea
-                readOnly
-                value={result?.extractedText || 'No text extracted from document.'}
-                rows={10}
-                className="w-full bg-slate-950 border border-slate-800 rounded-xl p-4 text-xs font-mono text-slate-300 focus:outline-none resize-y leading-relaxed"
-              />
-            </div>
-
-            {/* Accuracy Note */}
-            {result?.accuracyNote && (
-              <div className="p-3.5 rounded-xl bg-slate-950 border border-slate-800 text-xs text-slate-400 flex items-start space-x-2">
-                <Info className="w-4 h-4 text-slate-500 flex-shrink-0 mt-0.5" />
-                <p>{result.accuracyNote}</p>
+                <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 max-h-72 overflow-y-auto font-mono text-xs text-slate-700 whitespace-pre-wrap leading-relaxed select-all">
+                  {result.extractedText}
+                </div>
               </div>
             )}
           </div>
@@ -305,7 +297,9 @@ export const OcrPage: React.FC<OcrPageProps> = ({ onBack, onSelectTool }) => {
       {/* Processing Modal */}
       <ProcessingModal
         state={state}
-        statusMessage={`Analyzing document pages, recognizing ${SUPPORTED_LANGUAGES.find((l) => l.code === language)?.name || language} typography, and synthesizing invisible text layer...`}
+        statusMessage="Invoking OCR engine, synthesizing invisible vector text layer, and embedding coordinates..."
+        sourceFormat="pdf"
+        targetFormat="pdf"
       />
 
       {/* Educational SEO & FAQ Section */}

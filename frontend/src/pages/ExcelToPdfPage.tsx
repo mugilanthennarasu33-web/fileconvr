@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
-import { ArrowLeft, Table, AlertCircle } from 'lucide-react';
+import { AlertCircle } from 'lucide-react';
 import { FileUploader } from '../components/FileUploader';
 import { ProcessingModal } from '../components/ProcessingModal';
 import { DownloadView } from '../components/DownloadView';
+import { ToolPageLayout } from '../components/ToolPageLayout';
 import { excelToPdfApi } from '../services/api';
-import { ToolSeoSection } from '../components/ToolSeoSection';
 import { TOOLS_SEO_DATA } from '../data/seoData';
 import type { ProcessingResult, ProcessingState } from '../types';
-import { formatFileSize } from '../components/FileList';
+import { formatFileSize } from '../utils/formatters';
+import { FileFormatIcon } from '../components/FileFormatIcon';
 
 interface ExcelToPdfPageProps {
   onBack: () => void;
@@ -57,92 +58,97 @@ export const ExcelToPdfPage: React.FC<ExcelToPdfPageProps> = ({ onBack, onSelect
 
   if (state === 'success' && result) {
     return (
-      <DownloadView
-        result={result}
-        toolName="Excel to PDF"
-        onReset={handleReset}
-        onBackToHome={onBack}
-      />
+      <div className="max-w-3xl mx-auto px-4 py-8">
+        <DownloadView
+          result={result}
+          toolName="Excel to PDF"
+          onReset={handleReset}
+          onBackToHome={onBack}
+        />
+      </div>
     );
   }
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-8">
-      {/* Header with back */}
-      <div className="flex items-center space-x-3 mb-6">
-        <button
-          onClick={onBack}
-          className="p-2 rounded-xl bg-slate-900 border border-slate-800 hover:bg-slate-800 text-slate-400 hover:text-white transition-colors"
-        >
-          <ArrowLeft className="w-4 h-4" />
-        </button>
-        <div>
-          <h1 className="text-2xl font-bold text-white font-heading">Excel to PDF Converter</h1>
-          <p className="text-xs text-slate-400">Convert spreadsheets and multi-sheet workbooks into clean tabular PDFs.</p>
-        </div>
-      </div>
-
+    <ToolPageLayout
+      toolShortName="Excel to PDF"
+      toolHeading="Excel to PDF Converter"
+      toolSubtitle="Convert spreadsheets and workbooks (XLSX, XLS) into clean, tabular PDF files."
+      onBack={onBack}
+      seoContent={TOOLS_SEO_DATA['excel-to-pdf']}
+      onNavigateTool={onSelectTool}
+      benefit1Title="Table Preservation"
+      benefit1Desc="Grid alignment intact"
+      benefit2Title="Multi-Sheet Support"
+      benefit2Desc="Converts all tabs"
+      benefit3Title="Secure & Private"
+      benefit3Desc="Your files are safe"
+      step1Title="Upload"
+      step1Desc="Select your spreadsheet"
+      step2Title="Convert"
+      step2Desc="Our system formats it"
+      step3Title="Download"
+      step3Desc="Get your PDF file"
+    >
       {!file ? (
         <FileUploader
           accept=".xlsx,.xls"
           multiple={false}
           maxSizeMB={50}
           onFilesSelected={handleFileSelected}
-          title="Select or drop an Excel spreadsheet"
+          title="Drag & drop your Excel file here"
           subtitle="Supports XLSX and XLS spreadsheets with multi-worksheet preservation"
         />
       ) : (
         <div className="space-y-6">
           {/* Selected File Card */}
-          <div className="glass-panel p-5 rounded-2xl border border-slate-800 flex items-center justify-between">
+          <div className="saas-card p-5 flex items-center justify-between">
             <div className="flex items-center space-x-3 min-w-0">
-              <div className="w-10 h-10 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center justify-center flex-shrink-0">
-                <Table className="w-5 h-5" />
-              </div>
+              <FileFormatIcon format="excel" size="md" />
               <div className="min-w-0">
-                <p className="text-sm font-semibold text-white truncate">{file.name}</p>
-                <p className="text-xs text-slate-400">{formatFileSize(file.size)}</p>
+                <p className="text-sm font-semibold text-slate-900 truncate">{file.name}</p>
+                <p className="text-xs text-slate-500">{formatFileSize(file.size)}</p>
               </div>
             </div>
 
             <button
               onClick={() => setFile(null)}
-              className="text-xs text-slate-400 hover:text-red-400 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 transition-colors"
+              className="text-xs text-slate-600 hover:text-indigo-600 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 transition-colors cursor-pointer"
             >
               Change File
             </button>
           </div>
 
-          {/* Details Card */}
-          <div className="glass-panel p-5 rounded-2xl border border-slate-800 space-y-2">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400">
-              Multi-Worksheet Formatting
+          {/* Conversion Details Card */}
+          <div className="saas-card p-5 space-y-2">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500">
+              Workbook Conversion Details
             </h4>
-            <p className="text-xs text-slate-300 leading-relaxed">
-              All worksheets are rendered sequentially with automatic landscape orientation detection for wide columns, crisp table borders, and clear sheet titles.
+            <p className="text-xs text-slate-600 leading-relaxed">
+              Every worksheet tab is scanned, grid margins and formulas are rendered accurately into print-ready PDF pages without horizontal text cutoff.
             </p>
           </div>
 
           {/* Error Notice */}
           {error && (
-            <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/30 flex items-center space-x-3 text-red-400 text-sm">
-              <AlertCircle className="w-5 h-5 flex-shrink-0" />
+            <div className="p-4 rounded-xl bg-red-50 border border-red-200 flex items-center space-x-3 text-red-600 text-sm">
+              <AlertCircle className="w-5 h-5 shrink-0" strokeWidth={2} />
               <span>{error}</span>
             </div>
           )}
 
           {/* Actions */}
-          <div className="pt-4 flex flex-col sm:flex-row items-center justify-end gap-3 border-t border-slate-800">
+          <div className="pt-4 flex flex-col sm:flex-row items-center justify-end gap-3 border-t border-slate-200">
             <button
               onClick={handleReset}
-              className="w-full sm:w-auto px-5 py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 text-sm font-semibold border border-slate-800"
+              className="w-full sm:w-auto px-5 py-3 rounded-xl bg-white hover:bg-slate-50 text-slate-700 text-sm font-semibold border border-slate-200 cursor-pointer transition-colors"
             >
               Cancel
             </button>
 
             <button
               onClick={handleConvert}
-              className="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-gradient-to-r from-red-600 via-rose-600 to-amber-600 hover:from-red-500 hover:to-amber-500 text-white font-bold text-sm shadow-xl shadow-red-500/25 hover:shadow-red-500/40 transition-all cursor-pointer"
+              className="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 hover:from-blue-500 hover:to-violet-500 text-white font-bold text-sm shadow-md shadow-blue-500/25 transition-all cursor-pointer"
             >
               Convert to PDF →
             </button>
@@ -151,13 +157,7 @@ export const ExcelToPdfPage: React.FC<ExcelToPdfPageProps> = ({ onBack, onSelect
       )}
 
       {/* Processing Modal */}
-      <ProcessingModal state={state} />
-
-      {/* Educational SEO & FAQ Section */}
-      <ToolSeoSection
-        content={TOOLS_SEO_DATA['excel-to-pdf']}
-        onNavigateTool={onSelectTool}
-      />
-    </div>
+      <ProcessingModal state={state} sourceFormat="excel" targetFormat="pdf" />
+    </ToolPageLayout>
   );
 };

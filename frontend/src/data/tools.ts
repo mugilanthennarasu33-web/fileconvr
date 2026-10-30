@@ -102,6 +102,14 @@ export const TOOLS_DIRECTORY: ToolDef[] = [
     popular: true,
   },
   {
+    id: 'pdf-to-ppt',
+    title: 'PDF to PPT',
+    description: 'Convert PDF to editable PowerPoint presentations.',
+    category: 'convert',
+    iconName: 'Presentation',
+    popular: true,
+  },
+  {
     id: 'pdf-to-word',
     title: 'PDF to Word',
     description: 'Reconstruct editable DOCX files from native PDF layout structures.',

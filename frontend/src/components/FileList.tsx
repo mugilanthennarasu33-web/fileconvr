@@ -1,6 +1,7 @@
 import React from 'react';
-import { FileText, Trash2, ArrowUp, ArrowDown, RotateCw, Plus } from 'lucide-react';
+import { Trash2, ArrowUp, ArrowDown, RotateCw, Plus } from 'lucide-react';
 import type { UploadedFileItem } from '../types';
+import { FileFormatIcon } from './FileFormatIcon';
 
 interface FileListProps {
   files: UploadedFileItem[];
@@ -12,13 +13,8 @@ interface FileListProps {
   allowRotation?: boolean;
 }
 
-export function formatFileSize(bytes: number): string {
-  if (bytes === 0) return '0 B';
-  const k = 1024;
-  const sizes = ['B', 'KB', 'MB', 'GB'];
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2))} ${sizes[i]}`;
-}
+import { formatFileSize } from '../utils/formatters';
+export { formatFileSize };
 
 export const FileList: React.FC<FileListProps> = ({
   files,
@@ -32,7 +28,7 @@ export const FileList: React.FC<FileListProps> = ({
   return (
     <div className="w-full space-y-4">
       <div className="flex items-center justify-between">
-        <h4 className="text-sm font-semibold uppercase tracking-wider text-slate-400">
+        <h4 className="text-xs sm:text-sm font-semibold uppercase tracking-wider text-[#64748B]">
           Selected Documents ({files.length})
         </h4>
 
@@ -40,100 +36,106 @@ export const FileList: React.FC<FileListProps> = ({
           <button
             onClick={onAddMore}
             type="button"
-            className="flex items-center space-x-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 transition-colors"
+            className="flex items-center space-x-1.5 text-xs font-semibold px-3 py-1.5 rounded-xl bg-[#F7F9FF] hover:bg-slate-100 border border-[#E5EAF2] text-[#101828] transition-colors cursor-pointer"
           >
-            <Plus className="w-3.5 h-3.5" />
+            <Plus className="w-3.5 h-3.5 text-[#4F46E5]" strokeWidth={2} />
             <span>Add More</span>
           </button>
         )}
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {files.map((item, index) => (
-          <div
-            key={item.id}
-            className="glass-card relative rounded-2xl p-4 flex flex-col justify-between border border-slate-800 hover:border-slate-700 transition-all group"
-          >
-            {/* Top row with index and actions */}
-            <div className="flex items-center justify-between mb-3">
-              <span className="w-6 h-6 rounded-full bg-slate-800 text-slate-400 text-xs font-bold flex items-center justify-center">
-                {index + 1}
-              </span>
+        {files.map((item, index) => {
+          let format = 'pdf';
+          const lower = item.name.toLowerCase();
+          if (lower.endsWith('.docx') || lower.endsWith('.doc')) format = 'word';
+          else if (lower.endsWith('.xlsx') || lower.endsWith('.xls')) format = 'excel';
+          else if (lower.endsWith('.pptx') || lower.endsWith('.ppt')) format = 'ppt';
+          else if (lower.endsWith('.jpg') || lower.endsWith('.jpeg') || lower.endsWith('.png')) format = 'image';
 
-              <div className="flex items-center space-x-1">
-                {/* Move Up */}
-                {onMoveUp && index > 0 && (
-                  <button
-                    onClick={() => onMoveUp(index)}
-                    title="Move earlier in order"
-                    className="p-1 rounded hover:bg-slate-800 text-slate-400 hover:text-white transition-colors"
-                  >
-                    <ArrowUp className="w-3.5 h-3.5" />
-                  </button>
-                )}
-
-                {/* Move Down */}
-                {onMoveDown && index < files.length - 1 && (
-                  <button
-                    onClick={() => onMoveDown(index)}
-                    title="Move later in order"
-                    className="p-1 rounded hover:bg-slate-800 text-slate-400 hover:text-white transition-colors"
-                  >
-                    <ArrowDown className="w-3.5 h-3.5" />
-                  </button>
-                )}
-
-                {/* Rotate per file */}
-                {allowRotation && onRotate && (
-                  <button
-                    onClick={() => onRotate(item.id)}
-                    title="Rotate 90° clockwise"
-                    className="p-1 rounded hover:bg-slate-800 text-slate-400 hover:text-amber-400 transition-colors"
-                  >
-                    <RotateCw className="w-3.5 h-3.5" />
-                  </button>
-                )}
-
-                {/* Remove */}
-                <button
-                  onClick={() => onRemove(item.id)}
-                  title="Remove document"
-                  className="p-1 rounded hover:bg-red-500/20 text-slate-400 hover:text-red-400 transition-colors ml-1"
-                >
-                  <Trash2 className="w-3.5 h-3.5" />
-                </button>
-              </div>
-            </div>
-
-            {/* Document Thumbnail / Icon */}
-            <div className="py-4 flex flex-col items-center justify-center">
-              <div
-                className="w-16 h-20 rounded-lg bg-slate-900 border border-slate-700 flex flex-col items-center justify-center shadow-inner relative transition-transform duration-300"
-                style={{ transform: `rotate(${item.rotation}deg)` }}
-              >
-                <FileText className="w-8 h-8 text-red-500/80 mb-1" />
-                <span className="text-[9px] font-bold tracking-wider text-slate-500 uppercase">
-                  PDF
+          return (
+            <div
+              key={item.id}
+              className="bg-white border border-[#E5EAF2] rounded-2xl p-4 flex flex-col justify-between group shadow-2xs hover:shadow-md hover:border-[#CBD5E1] transition-all"
+            >
+              {/* Top row with index and actions */}
+              <div className="flex items-center justify-between mb-3">
+                <span className="w-6 h-6 rounded-full bg-[#F7F9FF] border border-[#E5EAF2] text-[#4F46E5] text-xs font-bold flex items-center justify-center">
+                  {index + 1}
                 </span>
-                {item.rotation > 0 && (
-                  <span className="absolute -top-1.5 -right-1.5 bg-amber-500 text-slate-950 text-[9px] font-extrabold px-1 rounded-full">
-                    {item.rotation}°
-                  </span>
-                )}
+
+                <div className="flex items-center space-x-1">
+                  {/* Move Up */}
+                  {onMoveUp && index > 0 && (
+                    <button
+                      onClick={() => onMoveUp(index)}
+                      title="Move earlier in order"
+                      className="p-1.5 rounded-lg hover:bg-slate-100 text-[#64748B] hover:text-[#101828] transition-colors cursor-pointer"
+                    >
+                      <ArrowUp className="w-3.5 h-3.5" strokeWidth={2} />
+                    </button>
+                  )}
+
+                  {/* Move Down */}
+                  {onMoveDown && index < files.length - 1 && (
+                    <button
+                      onClick={() => onMoveDown(index)}
+                      title="Move later in order"
+                      className="p-1.5 rounded-lg hover:bg-slate-100 text-[#64748B] hover:text-[#101828] transition-colors cursor-pointer"
+                    >
+                      <ArrowDown className="w-3.5 h-3.5" strokeWidth={2} />
+                    </button>
+                  )}
+
+                  {/* Rotate per file */}
+                  {allowRotation && onRotate && (
+                    <button
+                      onClick={() => onRotate(item.id)}
+                      title="Rotate 90° clockwise"
+                      className="p-1.5 rounded-lg hover:bg-slate-100 text-[#64748B] hover:text-[#2563EB] transition-colors cursor-pointer"
+                    >
+                      <RotateCw className="w-3.5 h-3.5" strokeWidth={2} />
+                    </button>
+                  )}
+
+                  {/* Remove */}
+                  <button
+                    onClick={() => onRemove(item.id)}
+                    title="Remove document"
+                    className="p-1.5 rounded-lg hover:bg-red-50 text-[#94A3B8] hover:text-red-600 transition-colors ml-1 cursor-pointer"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" strokeWidth={2} />
+                  </button>
+                </div>
+              </div>
+
+              {/* Document Thumbnail / Icon */}
+              <div className="py-4 flex flex-col items-center justify-center">
+                <div
+                  className="relative transition-transform duration-300"
+                  style={{ transform: `rotate(${item.rotation}deg)` }}
+                >
+                  <FileFormatIcon format={format} size="lg" />
+                  {item.rotation > 0 && (
+                    <span className="absolute -top-1.5 -right-1.5 bg-[#2563EB] text-white text-[9px] font-extrabold px-1 rounded-full">
+                      {item.rotation}°
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              {/* File info */}
+              <div className="pt-2 border-t border-[#E5EAF2]">
+                <p className="text-sm font-bold text-[#101828] truncate font-heading" title={item.name}>
+                  {item.name}
+                </p>
+                <p className="text-xs text-[#64748B] mt-0.5">
+                  {formatFileSize(item.size)}
+                </p>
               </div>
             </div>
-
-            {/* File info */}
-            <div className="pt-2 border-t border-slate-800/60">
-              <p className="text-sm font-semibold text-white truncate" title={item.name}>
-                {item.name}
-              </p>
-              <p className="text-xs text-slate-400 mt-0.5">
-                {formatFileSize(item.size)}
-              </p>
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );

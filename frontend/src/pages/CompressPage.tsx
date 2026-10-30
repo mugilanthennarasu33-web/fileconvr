@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ArrowLeft, Minimize2, AlertCircle, Check } from 'lucide-react';
+import { ArrowLeft, AlertCircle, Check } from 'lucide-react';
 import { FileUploader } from '../components/FileUploader';
 import { ProcessingModal } from '../components/ProcessingModal';
 import { DownloadView } from '../components/DownloadView';
@@ -8,6 +8,7 @@ import { ToolSeoSection } from '../components/ToolSeoSection';
 import { TOOLS_SEO_DATA } from '../data/seoData';
 import type { ProcessingResult, ProcessingState } from '../types';
 import { formatFileSize } from '../components/FileList';
+import { FileFormatIcon } from '../components/FileFormatIcon';
 
 interface CompressPageProps {
   onBack: () => void;
@@ -74,13 +75,14 @@ export const CompressPage: React.FC<CompressPageProps> = ({ onBack, onSelectTool
       <div className="flex items-center space-x-3 mb-6">
         <button
           onClick={onBack}
-          className="p-2 rounded-xl bg-slate-900 border border-slate-800 hover:bg-slate-800 text-slate-400 hover:text-white transition-colors"
+          className="p-2 rounded-xl bg-white border border-slate-200 hover:bg-slate-50 text-slate-600 transition-colors shadow-sm cursor-pointer"
+          title="Back to home"
         >
-          <ArrowLeft className="w-4 h-4" />
+          <ArrowLeft className="w-4 h-4" strokeWidth={2} />
         </button>
         <div>
-          <h1 className="text-2xl font-bold text-white font-heading">Compress PDF Documents</h1>
-          <p className="text-xs text-slate-400">Reduce document file size with precision stream and raster optimization.</p>
+          <h1 className="text-2xl font-bold text-slate-900 font-heading">Compress PDF Documents</h1>
+          <p className="text-xs text-slate-500">Reduce document file size with precision stream and raster optimization.</p>
         </div>
       </div>
 
@@ -96,20 +98,18 @@ export const CompressPage: React.FC<CompressPageProps> = ({ onBack, onSelectTool
       ) : (
         <div className="space-y-6">
           {/* Selected File Card */}
-          <div className="glass-panel p-5 rounded-2xl border border-slate-800 flex items-center justify-between">
+          <div className="saas-card p-5 flex items-center justify-between">
             <div className="flex items-center space-x-3 min-w-0">
-              <div className="w-10 h-10 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center justify-center flex-shrink-0">
-                <Minimize2 className="w-5 h-5" />
-              </div>
+              <FileFormatIcon format="pdf" size="md" />
               <div className="min-w-0">
-                <p className="text-sm font-semibold text-white truncate">{file.name}</p>
-                <p className="text-xs text-slate-400">Original Size: {formatFileSize(file.size)}</p>
+                <p className="text-sm font-semibold text-slate-900 truncate">{file.name}</p>
+                <p className="text-xs text-slate-500">Original Size: {formatFileSize(file.size)}</p>
               </div>
             </div>
 
             <button
               onClick={() => setFile(null)}
-              className="text-xs text-slate-400 hover:text-red-400 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 transition-colors"
+              className="text-xs text-slate-600 hover:text-blue-600 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 transition-colors cursor-pointer"
             >
               Change File
             </button>
@@ -117,7 +117,7 @@ export const CompressPage: React.FC<CompressPageProps> = ({ onBack, onSelectTool
 
           {/* Compression Level Selector */}
           <div className="space-y-3">
-            <h3 className="text-sm font-bold uppercase tracking-wider text-slate-400">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500">
               Select Compression Tier
             </h3>
 
@@ -125,18 +125,18 @@ export const CompressPage: React.FC<CompressPageProps> = ({ onBack, onSelectTool
               {/* Extreme */}
               <div
                 onClick={() => setLevel('extreme')}
-                className={`glass-panel p-5 rounded-2xl border cursor-pointer transition-all ${
+                className={`saas-card p-5 cursor-pointer transition-all ${
                   level === 'extreme'
-                    ? 'border-red-500 bg-red-500/10 shadow-lg shadow-red-500/10 scale-[1.02]'
-                    : 'border-slate-800 hover:border-slate-700'
+                    ? 'border-blue-600 bg-blue-50/50 shadow-md ring-2 ring-blue-500/20'
+                    : 'hover:border-slate-300'
                 }`}
               >
                 <div className="flex items-center justify-between mb-3">
-                  <span className="text-xs font-bold uppercase tracking-wider text-red-400">Extreme</span>
-                  {level === 'extreme' && <Check className="w-4 h-4 text-red-400" />}
+                  <span className="text-xs font-bold uppercase tracking-wider text-rose-600">Extreme</span>
+                  {level === 'extreme' && <Check className="w-4 h-4 text-blue-600" strokeWidth={2.5} />}
                 </div>
-                <h4 className="text-base font-bold text-white mb-1">Maximum Compression</h4>
-                <p className="text-xs text-slate-400 leading-relaxed">
+                <h4 className="text-base font-bold text-slate-900 mb-1">Maximum Compression</h4>
+                <p className="text-xs text-slate-500 leading-relaxed">
                   High space saving, lower image resolution. Perfect for email limits.
                 </p>
               </div>
@@ -144,18 +144,18 @@ export const CompressPage: React.FC<CompressPageProps> = ({ onBack, onSelectTool
               {/* Recommended */}
               <div
                 onClick={() => setLevel('recommended')}
-                className={`glass-panel p-5 rounded-2xl border cursor-pointer transition-all ${
+                className={`saas-card p-5 cursor-pointer transition-all ${
                   level === 'recommended'
-                    ? 'border-emerald-500 bg-emerald-500/10 shadow-lg shadow-emerald-500/10 scale-[1.02]'
-                    : 'border-slate-800 hover:border-slate-700'
+                    ? 'border-blue-600 bg-blue-50/50 shadow-md ring-2 ring-blue-500/20'
+                    : 'hover:border-slate-300'
                 }`}
               >
                 <div className="flex items-center justify-between mb-3">
-                  <span className="text-xs font-bold uppercase tracking-wider text-emerald-400">Recommended</span>
-                  {level === 'recommended' && <Check className="w-4 h-4 text-emerald-400" />}
+                  <span className="text-xs font-bold uppercase tracking-wider text-blue-600">Recommended</span>
+                  {level === 'recommended' && <Check className="w-4 h-4 text-blue-600" strokeWidth={2.5} />}
                 </div>
-                <h4 className="text-base font-bold text-white mb-1">Balanced Optimization</h4>
-                <p className="text-xs text-slate-400 leading-relaxed">
+                <h4 className="text-base font-bold text-slate-900 mb-1">Balanced Optimization</h4>
+                <p className="text-xs text-slate-500 leading-relaxed">
                   Best compromise between sharp visual quality and compact file size.
                 </p>
               </div>
@@ -163,18 +163,18 @@ export const CompressPage: React.FC<CompressPageProps> = ({ onBack, onSelectTool
               {/* Low */}
               <div
                 onClick={() => setLevel('low')}
-                className={`glass-panel p-5 rounded-2xl border cursor-pointer transition-all ${
+                className={`saas-card p-5 cursor-pointer transition-all ${
                   level === 'low'
-                    ? 'border-blue-500 bg-blue-500/10 shadow-lg shadow-blue-500/10 scale-[1.02]'
-                    : 'border-slate-800 hover:border-slate-700'
+                    ? 'border-blue-600 bg-blue-50/50 shadow-md ring-2 ring-blue-500/20'
+                    : 'hover:border-slate-300'
                 }`}
               >
                 <div className="flex items-center justify-between mb-3">
-                  <span className="text-xs font-bold uppercase tracking-wider text-blue-400">Low</span>
-                  {level === 'low' && <Check className="w-4 h-4 text-blue-400" />}
+                  <span className="text-xs font-bold uppercase tracking-wider text-emerald-600">Low</span>
+                  {level === 'low' && <Check className="w-4 h-4 text-blue-600" strokeWidth={2.5} />}
                 </div>
-                <h4 className="text-base font-bold text-white mb-1">Lossless Clean</h4>
-                <p className="text-xs text-slate-400 leading-relaxed">
+                <h4 className="text-base font-bold text-slate-900 mb-1">Lossless Clean</h4>
+                <p className="text-xs text-slate-500 leading-relaxed">
                   Removes duplicate metadata and compresses object streams with zero image loss.
                 </p>
               </div>
@@ -183,24 +183,24 @@ export const CompressPage: React.FC<CompressPageProps> = ({ onBack, onSelectTool
 
           {/* Error Notice */}
           {error && (
-            <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/30 flex items-center space-x-3 text-red-400 text-sm">
-              <AlertCircle className="w-5 h-5 flex-shrink-0" />
+            <div className="p-4 rounded-xl bg-red-50 border border-red-200 flex items-center space-x-3 text-red-600 text-sm">
+              <AlertCircle className="w-5 h-5 shrink-0" strokeWidth={2} />
               <span>{error}</span>
             </div>
           )}
 
           {/* Actions */}
-          <div className="pt-4 flex flex-col sm:flex-row items-center justify-end gap-3 border-t border-slate-800">
+          <div className="pt-4 flex flex-col sm:flex-row items-center justify-end gap-3 border-t border-slate-200">
             <button
               onClick={handleReset}
-              className="w-full sm:w-auto px-5 py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 text-sm font-semibold border border-slate-800"
+              className="w-full sm:w-auto px-5 py-3 rounded-xl bg-white hover:bg-slate-50 text-slate-700 text-sm font-semibold border border-slate-200 cursor-pointer transition-colors"
             >
               Cancel
             </button>
 
             <button
               onClick={handleCompress}
-              className="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-gradient-to-r from-red-600 via-rose-600 to-amber-600 hover:from-red-500 hover:to-amber-500 text-white font-bold text-sm shadow-xl shadow-red-500/25 hover:shadow-red-500/40 transition-all cursor-pointer"
+              className="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 hover:from-blue-500 hover:to-violet-500 text-white font-bold text-sm shadow-md shadow-blue-500/25 transition-all cursor-pointer"
             >
               Compress PDF →
             </button>

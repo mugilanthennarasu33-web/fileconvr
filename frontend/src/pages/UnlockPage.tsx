@@ -1,13 +1,5 @@
 import React, { useState } from 'react';
-import {
-  ArrowLeft,
-  Unlock,
-  Eye,
-  EyeOff,
-  AlertCircle,
-  KeyRound,
-  ShieldAlert,
-} from 'lucide-react';
+import { ArrowLeft, Unlock, Eye, EyeOff, AlertCircle, ShieldAlert, KeyRound } from 'lucide-react';
 import { FileUploader } from '../components/FileUploader';
 import { ProcessingModal } from '../components/ProcessingModal';
 import { DownloadView } from '../components/DownloadView';
@@ -15,6 +7,8 @@ import { unlockPdfApi } from '../services/api';
 import { ToolSeoSection } from '../components/ToolSeoSection';
 import { TOOLS_SEO_DATA } from '../data/seoData';
 import type { ProcessingResult, ProcessingState } from '../types';
+import { FileFormatIcon } from '../components/FileFormatIcon';
+import { formatFileSize } from '../components/FileList';
 
 interface UnlockPageProps {
   onBack: () => void;
@@ -45,9 +39,8 @@ export const UnlockPage: React.FC<UnlockPageProps> = ({ onBack, onSelectTool }) 
 
       setResult(data);
       setState('success');
-      setPassword('');
     } catch (err: any) {
-      setError(err.message || 'Failed to unlock PDF document.');
+      setError(err.message || 'Failed to unlock PDF document. Please verify your password.');
       setState('error');
     }
   };
@@ -77,16 +70,16 @@ export const UnlockPage: React.FC<UnlockPageProps> = ({ onBack, onSelectTool }) 
       <div className="flex items-center space-x-3 mb-6">
         <button
           onClick={onBack}
-          className="p-2 rounded-xl bg-slate-900 border border-slate-800 hover:bg-slate-800 text-slate-400 hover:text-white transition-colors"
+          className="p-2 rounded-xl bg-white border border-slate-200 hover:bg-slate-50 text-slate-600 transition-colors shadow-2xs cursor-pointer"
         >
           <ArrowLeft className="w-4 h-4" />
         </button>
         <div>
-          <h1 className="text-2xl font-bold text-white font-heading flex items-center gap-2">
-            <Unlock className="w-6 h-6 text-brand-500" />
+          <h1 className="text-2xl font-bold text-slate-900 font-heading flex items-center gap-2">
+            <Unlock className="w-6 h-6 text-indigo-600" />
             Unlock PDF Document
           </h1>
-          <p className="text-xs text-slate-400">
+          <p className="text-xs text-slate-500">
             Remove password encryption and security restrictions from authorized PDF files.
           </p>
         </div>
@@ -106,28 +99,26 @@ export const UnlockPage: React.FC<UnlockPageProps> = ({ onBack, onSelectTool }) 
       ) : (
         <div className="space-y-6">
           {/* Target File Info */}
-          <div className="glass-panel p-4 rounded-xl border border-slate-800 flex items-center justify-between">
+          <div className="saas-card p-4 rounded-2xl border border-slate-200 flex items-center justify-between">
             <div className="flex items-center gap-3 min-w-0">
-              <div className="w-10 h-10 rounded-lg bg-brand-500/10 text-brand-400 border border-brand-500/20 flex items-center justify-center flex-shrink-0">
-                <Unlock className="w-5 h-5" />
-              </div>
+              <FileFormatIcon format="pdf" size="md" />
               <div className="truncate">
-                <div className="text-sm font-semibold text-white truncate">{file.name}</div>
-                <div className="text-[11px] text-slate-400">{(file.size / (1024 * 1024)).toFixed(2)} MB</div>
+                <div className="text-sm font-semibold text-slate-900 truncate">{file.name}</div>
+                <div className="text-[11px] text-slate-500">{formatFileSize(file.size)}</div>
               </div>
             </div>
             <button
               onClick={() => setFile(null)}
-              className="text-xs text-slate-400 hover:text-red-400 transition-colors"
+              className="text-xs text-slate-600 hover:text-indigo-600 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 transition-colors cursor-pointer"
             >
               Change File
             </button>
           </div>
 
           {/* Password Entry Card */}
-          <div className="glass-panel p-6 rounded-2xl border border-slate-800 space-y-5">
+          <div className="saas-card p-6 rounded-2xl border border-slate-200 space-y-5">
             <div>
-              <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">
+              <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2">
                 Enter Current Document Password
               </label>
               <div className="relative">
@@ -136,42 +127,42 @@ export const UnlockPage: React.FC<UnlockPageProps> = ({ onBack, onSelectTool }) 
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Enter document password..."
-                  className="w-full px-4 py-3 rounded-xl bg-slate-900 border border-slate-800 text-white text-sm focus:border-brand-500 focus:outline-none pr-11"
+                  className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-sm focus:border-indigo-600 focus:outline-none pr-11"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-3 text-slate-400 hover:text-white"
+                  className="absolute right-3 top-3 text-slate-400 hover:text-slate-700 cursor-pointer"
                 >
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
               </div>
-              <p className="text-[11px] text-slate-400 mt-2">
+              <p className="text-[11px] text-slate-500 mt-2">
                 If the document only has owner/permissions restrictions without an opening password, you can leave this blank.
               </p>
             </div>
 
             {/* Security Notice */}
-            <div className="p-4 rounded-xl border border-slate-800 bg-slate-900/60 text-xs text-slate-400 space-y-1.5">
-              <div className="flex items-center gap-2 text-white font-medium">
-                <ShieldAlert className="w-4 h-4 text-amber-400" />
+            <div className="p-4 rounded-xl border border-slate-100 bg-slate-50/80 text-xs text-slate-600 space-y-1.5">
+              <div className="flex items-center gap-2 text-slate-900 font-medium">
+                <ShieldAlert className="w-4 h-4 text-amber-500" />
                 Ethical & Authorized Decryption Only
               </div>
               <p className="text-[11px] leading-relaxed">
-                fileconvr authenticates documents strictly with the supplied password. We never brute-force, bypass, or crack protected documents. Passwords are processed ephemerally in memory and never stored in logs or databases.
+                fileconvrt authenticates documents strictly with the supplied password. We never brute-force, bypass, or crack protected documents. Passwords are processed ephemerally in memory and never stored in logs or databases.
               </p>
             </div>
 
             {error && (
-              <div className="p-4 rounded-xl border border-red-500/30 bg-red-500/10 text-red-300 text-xs flex items-center gap-2">
-                <AlertCircle className="w-4 h-4 flex-shrink-0 text-red-400" />
+              <div className="p-4 rounded-xl border border-red-200 bg-red-50 text-red-600 text-xs flex items-center gap-2">
+                <AlertCircle className="w-4 h-4 flex-shrink-0 text-red-500" />
                 <span>{error}</span>
               </div>
             )}
 
             <button
               onClick={handleUnlock}
-              className="w-full py-3.5 rounded-xl bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-500 hover:to-indigo-500 text-white font-semibold text-sm shadow-lg shadow-brand-500/20 transition-all flex items-center justify-center gap-2"
+              className="w-full py-3.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-sm shadow-md shadow-indigo-500/20 transition-all flex items-center justify-center gap-2 cursor-pointer"
             >
               <KeyRound className="w-4 h-4" />
               Unlock Document & Download Unencrypted PDF
@@ -183,6 +174,8 @@ export const UnlockPage: React.FC<UnlockPageProps> = ({ onBack, onSelectTool }) 
       <ProcessingModal
         state={state}
         statusMessage="Authenticating password credentials and removing encryption stream..."
+        sourceFormat="pdf"
+        targetFormat="pdf"
       />
 
       {/* Educational SEO & FAQ Section */}

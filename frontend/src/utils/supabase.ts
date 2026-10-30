@@ -1,13 +1,21 @@
 import { createClient, type SupabaseClient, type Session } from '@supabase/supabase-js';
+import { safeStorage } from './safeStorage';
+
+const env =
+  (typeof import.meta !== 'undefined' && import.meta.env)
+    ? import.meta.env
+    : (typeof globalThis !== 'undefined' && (globalThis as any).process?.env)
+    ? (globalThis as any).process.env
+    : {};
 
 const supabaseUrl =
-  import.meta.env.VITE_SUPABASE_URL ||
-  import.meta.env.NEXT_PUBLIC_SUPABASE_URL ||
+  env.VITE_SUPABASE_URL ||
+  env.NEXT_PUBLIC_SUPABASE_URL ||
   'https://wqadoyzvepzqstpinyok.supabase.co';
 
 const supabaseKey =
-  import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY ||
-  import.meta.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
+  env.VITE_SUPABASE_PUBLISHABLE_KEY ||
+  env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
   'sb_publishable_mibkPUsd1YtyaGNm5Iu6rw_K_eul9lG';
 
 export const isSupabaseConfigured = (): boolean => {
@@ -29,6 +37,7 @@ export const supabase: SupabaseClient = createClient(effectiveUrl, effectiveKey,
     autoRefreshToken: true,
     detectSessionInUrl: true,
     storageKey: 'fileconvr-supabase-auth',
+    storage: safeStorage,
   },
 });
 

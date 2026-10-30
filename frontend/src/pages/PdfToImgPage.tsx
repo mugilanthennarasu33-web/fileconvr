@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ArrowLeft, FileImage, AlertCircle, Archive } from 'lucide-react';
+import { ArrowLeft, AlertCircle, Archive } from 'lucide-react';
 import { FileUploader } from '../components/FileUploader';
 import { ProcessingModal } from '../components/ProcessingModal';
 import { DownloadView } from '../components/DownloadView';
@@ -8,6 +8,7 @@ import { ToolSeoSection } from '../components/ToolSeoSection';
 import { TOOLS_SEO_DATA } from '../data/seoData';
 import type { ProcessingResult, ProcessingState } from '../types';
 import { formatFileSize } from '../components/FileList';
+import { FileFormatIcon } from '../components/FileFormatIcon';
 
 interface PdfToImgPageProps {
   onBack: () => void;
@@ -72,13 +73,14 @@ export const PdfToImgPage: React.FC<PdfToImgPageProps> = ({ onBack, onSelectTool
       <div className="flex items-center space-x-3 mb-6">
         <button
           onClick={onBack}
-          className="p-2 rounded-xl bg-slate-900 border border-slate-800 hover:bg-slate-800 text-slate-400 hover:text-white transition-colors"
+          className="p-2 rounded-xl bg-white border border-slate-200 hover:bg-slate-50 text-slate-600 transition-colors shadow-sm cursor-pointer"
+          title="Back to home"
         >
-          <ArrowLeft className="w-4 h-4" />
+          <ArrowLeft className="w-4 h-4" strokeWidth={2} />
         </button>
         <div>
-          <h1 className="text-2xl font-bold text-white font-heading">PDF to JPG Converter</h1>
-          <p className="text-xs text-slate-400">Render each page of your PDF into high-resolution JPG images.</p>
+          <h1 className="text-2xl font-bold text-slate-900 font-heading">PDF to JPG Converter</h1>
+          <p className="text-xs text-slate-500">Render each page of your PDF into high-resolution JPG images.</p>
         </div>
       </div>
 
@@ -94,74 +96,54 @@ export const PdfToImgPage: React.FC<PdfToImgPageProps> = ({ onBack, onSelectTool
       ) : (
         <div className="space-y-6">
           {/* Selected File Card */}
-          <div className="glass-panel p-5 rounded-2xl border border-slate-800 flex items-center justify-between">
+          <div className="saas-card p-5 flex items-center justify-between">
             <div className="flex items-center space-x-3 min-w-0">
-              <div className="w-10 h-10 rounded-lg bg-blue-500/10 text-blue-400 border border-blue-500/20 flex items-center justify-center flex-shrink-0">
-                <FileImage className="w-5 h-5" />
-              </div>
+              <FileFormatIcon format="pdf" size="md" />
               <div className="min-w-0">
-                <p className="text-sm font-semibold text-white truncate">{file.name}</p>
-                <p className="text-xs text-slate-400">{formatFileSize(file.size)}</p>
+                <p className="text-sm font-semibold text-slate-900 truncate">{file.name}</p>
+                <p className="text-xs text-slate-500">{formatFileSize(file.size)}</p>
               </div>
             </div>
 
             <button
               onClick={() => setFile(null)}
-              className="text-xs text-slate-400 hover:text-red-400 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 transition-colors"
+              className="text-xs text-slate-600 hover:text-blue-600 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 transition-colors cursor-pointer"
             >
               Change File
             </button>
           </div>
 
-          {/* Format Details Card */}
-          <div className="glass-panel p-6 rounded-2xl border border-slate-800 space-y-3">
-            <h3 className="text-sm font-bold uppercase tracking-wider text-slate-400">
-              Output Format Specifications
-            </h3>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
-              <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800 flex items-start space-x-3">
-                <FileImage className="w-5 h-5 text-blue-400 mt-0.5 flex-shrink-0" />
-                <div>
-                  <h4 className="text-xs font-bold text-white mb-0.5">Single Page PDFs</h4>
-                  <p className="text-[11px] text-slate-400 leading-relaxed">
-                    Instantly rendered to a single high-quality `.jpg` image ready to save.
-                  </p>
-                </div>
-              </div>
-
-              <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800 flex items-start space-x-3">
-                <Archive className="w-5 h-5 text-amber-400 mt-0.5 flex-shrink-0" />
-                <div>
-                  <h4 className="text-xs font-bold text-white mb-0.5">Multi-Page PDFs</h4>
-                  <p className="text-[11px] text-slate-400 leading-relaxed">
-                    All pages are cleanly archived into a `.zip` file containing individual numbered JPGs.
-                  </p>
-                </div>
-              </div>
-            </div>
+          {/* Details Card */}
+          <div className="saas-card p-5 space-y-2">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 flex items-center space-x-1.5">
+              <Archive className="w-4 h-4 text-violet-600" strokeWidth={2} />
+              <span>Multi-Page Packaging</span>
+            </h4>
+            <p className="text-xs text-slate-600 leading-relaxed">
+              Each page is rendered at 150 DPI in crisp sRGB color. Multi-page documents are automatically packaged into a clean ZIP archive with numbered files (e.g., page_1.jpg, page_2.jpg).
+            </p>
           </div>
 
           {/* Error Notice */}
           {error && (
-            <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/30 flex items-center space-x-3 text-red-400 text-sm">
-              <AlertCircle className="w-5 h-5 flex-shrink-0" />
+            <div className="p-4 rounded-xl bg-red-50 border border-red-200 flex items-center space-x-3 text-red-600 text-sm">
+              <AlertCircle className="w-5 h-5 shrink-0" strokeWidth={2} />
               <span>{error}</span>
             </div>
           )}
 
           {/* Actions */}
-          <div className="pt-4 flex flex-col sm:flex-row items-center justify-end gap-3 border-t border-slate-800">
+          <div className="pt-4 flex flex-col sm:flex-row items-center justify-end gap-3 border-t border-slate-200">
             <button
               onClick={handleReset}
-              className="w-full sm:w-auto px-5 py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 text-sm font-semibold border border-slate-800"
+              className="w-full sm:w-auto px-5 py-3 rounded-xl bg-white hover:bg-slate-50 text-slate-700 text-sm font-semibold border border-slate-200 cursor-pointer transition-colors"
             >
               Cancel
             </button>
 
             <button
               onClick={handleConvert}
-              className="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-gradient-to-r from-red-600 via-rose-600 to-amber-600 hover:from-red-500 hover:to-amber-500 text-white font-bold text-sm shadow-xl shadow-red-500/25 hover:shadow-red-500/40 transition-all cursor-pointer"
+              className="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 hover:from-blue-500 hover:to-violet-500 text-white font-bold text-sm shadow-md shadow-blue-500/25 transition-all cursor-pointer"
             >
               Convert to JPG →
             </button>
@@ -170,7 +152,7 @@ export const PdfToImgPage: React.FC<PdfToImgPageProps> = ({ onBack, onSelectTool
       )}
 
       {/* Processing Modal */}
-      <ProcessingModal state={state} />
+      <ProcessingModal state={state} sourceFormat="pdf" targetFormat="image" />
 
       {/* Educational SEO & FAQ Section */}
       <ToolSeoSection

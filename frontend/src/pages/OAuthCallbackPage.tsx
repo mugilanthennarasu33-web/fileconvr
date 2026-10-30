@@ -82,16 +82,16 @@ export const OAuthCallbackPage: React.FC<OAuthCallbackPageProps> = ({
   return (
     <div className="min-h-[calc(100vh-8rem)] flex items-center justify-center px-4 py-12">
       <div className="w-full max-w-md">
-        <div className="glass-panel rounded-2xl border border-slate-800/80 bg-slate-900/60 backdrop-blur-xl p-8 shadow-2xl shadow-black/40 text-center">
+        <div className="saas-card bg-white rounded-3xl border border-[#E5EAF2] p-8 shadow-xl text-center">
           {status === 'loading' && (
             <div className="space-y-4 py-6">
-              <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-400 mb-2">
+              <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-indigo-50 border border-indigo-100 text-[#4F46E5] mb-2 shadow-2xs">
                 <Loader2 className="w-7 h-7 animate-spin" />
               </div>
-              <h2 className="text-xl font-bold text-white font-heading">
+              <h2 className="text-xl font-bold text-[#101828] font-heading">
                 Authenticating with Google
               </h2>
-              <p className="text-sm text-slate-400">
+              <p className="text-xs sm:text-sm text-[#64748B]">
                 Securely verifying your credentials and establishing your session...
               </p>
             </div>
@@ -99,13 +99,13 @@ export const OAuthCallbackPage: React.FC<OAuthCallbackPageProps> = ({
 
           {status === 'success' && (
             <div className="space-y-4 py-6 animate-in fade-in zoom-in-95 duration-300">
-              <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 mb-2">
+              <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-emerald-50 border border-emerald-100 text-[#10B981] mb-2 shadow-2xs">
                 <CheckCircle2 className="w-7 h-7" />
               </div>
-              <h2 className="text-xl font-bold text-white font-heading">
-                Welcome to fileconvr!
+              <h2 className="text-xl font-bold text-[#101828] font-heading">
+                Welcome to fileconvrt!
               </h2>
-              <p className="text-sm text-slate-400">
+              <p className="text-xs sm:text-sm text-[#64748B]">
                 Sign-in successful. Redirecting to your dashboard...
               </p>
             </div>
@@ -113,19 +113,19 @@ export const OAuthCallbackPage: React.FC<OAuthCallbackPageProps> = ({
 
           {status === 'error' && (
             <div className="space-y-5 py-4 animate-in fade-in">
-              <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-400 mb-1">
+              <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-rose-50 border border-rose-100 text-rose-600 mb-1 shadow-2xs">
                 <AlertCircle className="w-7 h-7" />
               </div>
-              <h2 className="text-xl font-bold text-white font-heading">
+              <h2 className="text-xl font-bold text-[#101828] font-heading">
                 Authentication Error
               </h2>
-              <div className="p-3.5 rounded-xl bg-red-500/10 border border-red-500/20 text-red-300 text-sm text-left">
+              <div className="p-3.5 rounded-xl bg-red-50 border border-red-200 text-red-600 text-xs text-left">
                 {errorMessage}
               </div>
               <button
                 type="button"
                 onClick={onNavigateToLogin}
-                className="w-full inline-flex items-center justify-center px-4 py-2.5 rounded-xl bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-semibold text-sm transition-all shadow-lg shadow-red-600/20"
+                className="w-full inline-flex items-center justify-center px-4 py-2.5 rounded-xl bg-gradient-to-r from-[#2563EB] to-[#4F46E5] hover:opacity-95 text-white font-semibold text-xs sm:text-sm transition-all shadow-sm cursor-pointer"
               >
                 <span>Return to Sign In</span>
                 <ArrowRight className="w-4 h-4 ml-2" />

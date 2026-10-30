@@ -108,13 +108,14 @@ export const MergePage: React.FC<MergePageProps> = ({ onBack, onSelectTool }) =>
       <div className="flex items-center space-x-3 mb-6">
         <button
           onClick={onBack}
-          className="p-2 rounded-xl bg-slate-900 border border-slate-800 hover:bg-slate-800 text-slate-400 hover:text-white transition-colors"
+          className="p-2 rounded-xl bg-white border border-slate-200 hover:bg-slate-50 text-slate-600 transition-colors shadow-sm cursor-pointer"
+          title="Back to home"
         >
-          <ArrowLeft className="w-4 h-4" />
+          <ArrowLeft className="w-4 h-4" strokeWidth={2} />
         </button>
         <div>
-          <h1 className="text-2xl font-bold text-white font-heading">Merge PDF Documents</h1>
-          <p className="text-xs text-slate-400">Combine multiple PDF files in the exact order you want.</p>
+          <h1 className="text-2xl font-bold text-slate-900 font-heading">Merge PDF Documents</h1>
+          <p className="text-xs text-slate-500">Combine multiple PDF files in the exact order you want.</p>
         </div>
       </div>
 
@@ -131,16 +132,16 @@ export const MergePage: React.FC<MergePageProps> = ({ onBack, onSelectTool }) =>
       ) : (
         <div className="space-y-6">
           {/* Controls Bar */}
-          <div className="flex items-center justify-between p-4 rounded-2xl glass-panel border border-slate-800">
-            <span className="text-xs text-slate-300">
-              Total: <strong className="text-white">{files.length}</strong> PDF file(s)
+          <div className="flex items-center justify-between p-4 rounded-2xl saas-card">
+            <span className="text-xs text-slate-600">
+              Total: <strong className="text-slate-900">{files.length}</strong> PDF file(s)
             </span>
 
             <button
               onClick={handleSortByName}
-              className="flex items-center space-x-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 transition-colors"
+              className="flex items-center space-x-1.5 text-xs font-semibold px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors cursor-pointer"
             >
-              <ArrowUpDown className="w-3.5 h-3.5 text-red-400" />
+              <ArrowUpDown className="w-3.5 h-3.5 text-blue-600" strokeWidth={2} />
               <span>Sort A-Z</span>
             </button>
           </div>
@@ -166,17 +167,17 @@ export const MergePage: React.FC<MergePageProps> = ({ onBack, onSelectTool }) =>
 
           {/* Error notice */}
           {error && (
-            <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/30 flex items-center space-x-3 text-red-400 text-sm">
-              <AlertCircle className="w-5 h-5 flex-shrink-0" />
+            <div className="p-4 rounded-xl bg-red-50 border border-red-200 flex items-center space-x-3 text-red-600 text-sm">
+              <AlertCircle className="w-5 h-5 shrink-0" strokeWidth={2} />
               <span>{error}</span>
             </div>
           )}
 
           {/* Action Bar */}
-          <div className="pt-4 flex flex-col sm:flex-row items-center justify-end gap-3 border-t border-slate-800">
+          <div className="pt-4 flex flex-col sm:flex-row items-center justify-end gap-3 border-t border-slate-200">
             <button
               onClick={handleReset}
-              className="w-full sm:w-auto px-5 py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 text-sm font-semibold border border-slate-800"
+              className="w-full sm:w-auto px-5 py-3 rounded-xl bg-white hover:bg-slate-50 text-slate-700 text-sm font-semibold border border-slate-200 cursor-pointer transition-colors"
             >
               Clear All
             </button>
@@ -184,10 +185,10 @@ export const MergePage: React.FC<MergePageProps> = ({ onBack, onSelectTool }) =>
             <button
               onClick={handleMerge}
               disabled={files.length < 2}
-              className={`w-full sm:w-auto px-8 py-3.5 rounded-xl font-bold text-sm shadow-xl transition-all ${
+              className={`w-full sm:w-auto px-8 py-3.5 rounded-xl font-bold text-sm shadow-md transition-all ${
                 files.length >= 2
-                  ? 'bg-gradient-to-r from-red-600 via-rose-600 to-amber-600 hover:from-red-500 hover:to-amber-500 text-white shadow-red-500/25 hover:shadow-red-500/40 cursor-pointer'
-                  : 'bg-slate-800 text-slate-500 cursor-not-allowed'
+                  ? 'bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 hover:from-blue-500 hover:to-violet-500 text-white shadow-blue-500/25 cursor-pointer'
+                  : 'bg-slate-200 text-slate-400 cursor-not-allowed'
               }`}
             >
               Merge PDF Files →
