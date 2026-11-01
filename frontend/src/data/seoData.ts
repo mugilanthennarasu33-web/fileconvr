@@ -1,20 +1,32 @@
 /**
  * SEO Configuration & Page Metadata Dictionary for fileconvr
- * Configurable production URL defaults to https://fileconvr.com or VITE_SITE_URL.
+ * Configurable production URL defaults to https://www.fileconvrt.site or VITE_SITE_URL.
  */
 
+const resolveCanonicalBaseUrl = (): string => {
+  const envUrl = typeof import.meta !== 'undefined' ? import.meta.env?.VITE_SITE_URL : undefined;
+  if (
+    envUrl &&
+    !envUrl.includes('localhost') &&
+    !envUrl.includes('127.0.0.1') &&
+    !envUrl.includes('fileconvr.com') &&
+    !envUrl.includes('preview')
+  ) {
+    return envUrl.replace(/\/+$/, '');
+  }
+  return 'https://www.fileconvrt.site';
+};
+
 export const SITE_CONFIG = {
-  name: 'fileconvr',
+  name: 'Fileconvrt',
   tagline: 'Convert. Manage. Simplify.',
-  defaultTitle: 'fileconvr — Free Online PDF Converter & PDF Utility Platform',
+  defaultTitle: 'Fileconvrt — Free Online PDF Converter & PDF Utility Platform',
   defaultDescription:
-    'fileconvr is a high-speed, privacy-first PDF utility platform. Merge, split, compress, convert, edit, OCR, repair, and protect your PDF documents with zero logging.',
-  baseUrl: (typeof import.meta !== 'undefined' && import.meta.env?.VITE_SITE_URL)
-    ? import.meta.env.VITE_SITE_URL.replace(/\/$/, '')
-    : 'https://fileconvr.com',
-  author: 'fileconvr Team',
-  twitterHandle: '@fileconvr',
-  themeColor: '#020617', // slate-950
+    'Fileconvrt is a high-speed, privacy-first PDF utility platform. Merge, split, compress, convert, edit, OCR, repair, and protect your PDF documents with zero logging.',
+  baseUrl: resolveCanonicalBaseUrl(),
+  author: 'Fileconvrt Team',
+  twitterHandle: '@Fileconvrt',
+  themeColor: '#ffffff',
 };
 
 export interface ToolFaqItem {

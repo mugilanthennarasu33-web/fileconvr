@@ -33,7 +33,7 @@ Before this optimization, fileconvr operated purely as an in-memory client state
 - Every page dynamically updates:
   - `<title>`: Unique, keyword-focused, within 60 characters.
   - `<meta name="description">`: Compelling call-to-action within 155 characters.
-  - `<link rel="canonical" href="...">`: Configurable via `SITE_CONFIG.baseUrl` (defaults to `https://fileconvr.com` or `VITE_SITE_URL`).
+  - `<link rel="canonical" href="...">`: Configurable via `SITE_CONFIG.baseUrl` (defaults to `https://www.fileconvrt.site` or `VITE_SITE_URL`).
   - Open Graph (`og:title`, `og:description`, `og:url`, `og:type`, `og:site_name`, `og:image`).
   - Twitter / X Cards (`twitter:card`, `twitter:title`, `twitter:description`, `twitter:image`, `twitter:site`).
   - Meta Robots: `index, follow` for public tools; `noindex, nofollow` for `/login`, `/register`, `/dashboard`, `/account`, `/auth/callback`, and `/404`.
@@ -42,7 +42,7 @@ Before this optimization, fileconvr operated purely as an in-memory client state
 - **[`frontend/public/robots.txt`](file:///d:/Reverse%20engineer%20anything/frontend/public/robots.txt)**:
   - Grants access to all search engines for public tools and static assets (`/assets/`, `/favicon.svg`).
   - Disallows internal and private paths (`/api/`, `/dashboard`, `/account`, `/login`, `/register`, `/auth/`).
-  - Declares canonical XML Sitemap location: `https://fileconvr.com/sitemap.xml`.
+  - Declares canonical XML Sitemap location: `https://www.fileconvrt.site/sitemap.xml`.
 - **[`frontend/public/sitemap.xml`](file:///d:/Reverse%20engineer%20anything/frontend/public/sitemap.xml)**:
   - Clean XML sitemap declaring 20 canonical public URLs with `<lastmod>`, `<changefreq>`, and search `<priority>`.
 
@@ -173,9 +173,9 @@ All 19 tool pages and the Homepage were enriched with original, technically accu
 ### Step 1: Configure Production Domain URL
 In production hosting (Vercel, Cloudflare Pages, Netlify, or self-hosted Docker/Nginx), set the environment variable:
 ```env
-VITE_SITE_URL=https://your-production-domain.com
+VITE_SITE_URL=https://www.fileconvrt.site
 ```
-If not specified, canonical URLs default to `https://fileconvr.com`.
+If not specified, canonical URLs default to `https://www.fileconvrt.site`.
 
 ### Step 2: Google Search Console Ownership Verification
 1. Sign in to [Google Search Console](https://search.google.com/search-console).

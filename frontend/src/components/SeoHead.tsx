@@ -103,7 +103,7 @@ export const SeoHead: React.FC<SeoHeadProps> = ({
         name: SITE_CONFIG.name,
         url: SITE_CONFIG.baseUrl,
         logo: `${SITE_CONFIG.baseUrl}/favicon.svg`,
-        sameAs: ['https://twitter.com/fileconvr', 'https://github.com/fileconvr'],
+        sameAs: ['https://twitter.com/Fileconvrt', 'https://github.com/Fileconvrt'],
       });
 
       // BreadcrumbList Schema if breadcrumbs are present

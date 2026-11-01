@@ -81,8 +81,8 @@ cp backend/.env.example backend/.env
 | :--- | :---: | :--- | :--- |
 | `NODE_ENV` | **Yes** | `production` | Refuses in-memory fallback; enforces secure cookies and strict CORS. |
 | `PORT` | No | `5000` | Port for the backend Express server. |
-| `CLIENT_URL` | **Yes** | `https://fileconvr.com` | Primary URL of the frontend web application. |
-| `ALLOWED_ORIGINS` | **Yes** | `https://fileconvr.com` | Comma-separated list of origins permitted by CORS policy. |
+| `CLIENT_URL` | **Yes** | `https://www.fileconvrt.site` | Primary URL of the frontend web application. |
+| `ALLOWED_ORIGINS` | **Yes** | `https://www.fileconvrt.site,https://fileconvrt.site` | Comma-separated list of origins permitted by CORS policy. |
 | `DATABASE_URL` | **Yes** | — | PostgreSQL connection string with connection pooling. |
 | `TEMP_STORAGE_DIR` | No | `./storage/temp` | Directory for task-isolated temporary files. |
 | `FILE_TTL_MINUTES` | No | `60` | Lifespan of generated download files before automated disk sweep. |
@@ -144,17 +144,17 @@ limit_req_zone $binary_remote_addr zone=auth_limit:10m rate=5r/m;
 
 server {
     listen 80;
-    server_name fileconvr.com www.fileconvr.com;
+    server_name fileconvrt.site www.fileconvrt.site;
     return 301 https://$host$request_uri;
 }
 
 server {
     listen 443 ssl http2;
-    server_name fileconvr.com www.fileconvr.com;
+    server_name fileconvrt.site www.fileconvrt.site;
 
     # SSL Certificates
-    ssl_certificate /etc/letsencrypt/live/fileconvr.com/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/fileconvr.com/privkey.pem;
+    ssl_certificate /etc/letsencrypt/live/fileconvrt.site/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/fileconvrt.site/privkey.pem;
     ssl_protocols TLSv1.2 TLSv1.3;
     ssl_ciphers HIGH:!aNULL:!MD5;
 
@@ -163,7 +163,7 @@ server {
     add_header X-Frame-Options DENY always;
     add_header X-XSS-Protection "1; mode=block" always;
     add_header Referrer-Policy "strict-origin-when-cross-origin" always;
-    add_header Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self' https://fileconvr.com;" always;
+    add_header Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self' https://www.fileconvrt.site https://fileconvrt.site;" always;
 
     # Max Upload Size (matches backend limit)
     client_max_body_size 105M;
@@ -285,7 +285,7 @@ GET /api/health
 ### Automated Monitoring Script (Cron or Health Checker)
 ```bash
 # Verify health every 2 minutes
-curl -sf https://fileconvr.com/api/health > /dev/null || systemctl restart fileconvr-backend
+curl -sf https://www.fileconvrt.site/api/health > /dev/null || systemctl restart fileconvr-backend
 ```
 
 ---
