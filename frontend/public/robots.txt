@@ -4,7 +4,10 @@
 User-agent: *
 Allow: /
 Allow: /assets/
+Allow: /logo.png
+Allow: /logo-mark.png
 Allow: /favicon.svg
+Allow: /favicon.png
 Allow: /icons.svg
 
 # Exclude private, authenticated, and API routes from crawling

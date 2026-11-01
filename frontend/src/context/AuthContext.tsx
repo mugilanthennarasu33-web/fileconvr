@@ -29,16 +29,23 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const refreshUser = async () => {
     try {
-      // 1. If Supabase session exists, query backend with Supabase Bearer token
-      const token = await getSupabaseAccessToken();
-      const currentUser = await getMeApi(token);
-      if (currentUser) {
-        setUser(currentUser);
+      // 0. Short-circuit for search engine crawlers and bots (no authentication needed for indexing public SEO content)
+      if (typeof navigator !== 'undefined' && /bot|googlebot|crawler|spider|inspection/i.test(navigator.userAgent || '')) {
+        setUser(null);
+        setIsLoading(false);
         return;
       }
 
-      // 2. If backend /api/auth/me returned null, but Supabase has an active session, use Supabase profile
+      // 1. If Supabase session exists, query backend with Supabase Bearer token
+      const token = await getSupabaseAccessToken();
       if (token) {
+        const currentUser = await getMeApi(token);
+        if (currentUser) {
+          setUser(currentUser);
+          return;
+        }
+
+        // 2. If backend /api/auth/me returned null, but Supabase has an active session, use Supabase profile
         const { data: { user: supaUser } } = await supabase.auth.getUser();
         if (supaUser) {
           setUser({
@@ -48,7 +55,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
               supaUser.user_metadata?.full_name ||
               supaUser.user_metadata?.name ||
               supaUser.email?.split('@')[0] ||
-              'Google User',
+              'User',
             avatarUrl: supaUser.user_metadata?.avatar_url || null,
             tier: 'free',
             role: 'user',
@@ -59,7 +66,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         }
       }
 
-      // 3. Fallback to legacy cookie session check
+      // 3. Fallback to legacy cookie session check only if cookies exist
       const cookieUser = await getMeApi();
       setUser(cookieUser);
     } catch (err) {

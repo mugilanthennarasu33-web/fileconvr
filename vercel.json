@@ -33,11 +33,24 @@
           "value": "public, max-age=0, must-revalidate"
         }
       ]
+    },
+    {
+      "source": "/(logo\\.png|logo-mark\\.png|favicon\\.png|favicon\\.svg)",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "all"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
     }
   ],
   "rewrites": [
     {
-      "source": "/((?!sitemap\\.xml|robots\\.txt|favicon\\.ico|favicon\\.png|logo\\.png|assets/).*)",
+      "source": "/((?!sitemap\\.xml|robots\\.txt|.*\\.(?:png|jpg|jpeg|gif|svg|ico|webp|xml|txt|json|webmanifest)$|assets/).*)",
       "destination": "/index.html"
     }
   ]
