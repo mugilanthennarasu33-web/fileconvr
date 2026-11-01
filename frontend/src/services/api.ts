@@ -13,7 +13,113 @@ import type {
 
 import { getSupabaseAccessToken } from '../utils/supabase';
 
-const API_BASE = '/api';
+const rawApiUrl = (import.meta.env.VITE_API_URL as string)?.trim();
+const isProd = import.meta.env.PROD;
+
+// In production, fallback to relative '/api' if VITE_API_URL points to localhost
+export const API_BASE = (rawApiUrl && (!isProd || !rawApiUrl.includes('localhost')))
+  ? rawApiUrl.replace(/\/+$/, '')
+  : '/api';
+
+/**
+ * Resolves relative backend download URLs to absolute URLs if API_BASE is on an external domain.
+ */
+export function resolveDownloadUrl(url: string | null | undefined): string {
+  if (!url) return '';
+  if (url.startsWith('http://') || url.startsWith('https://')) return url;
+  if (API_BASE.startsWith('http://') || API_BASE.startsWith('https://')) {
+    const origin = API_BASE.replace(/\/api\/?$/, '');
+    return `${origin}${url.startsWith('/') ? '' : '/'}${url}`;
+  }
+  return url;
+}
+
+function normalizeResult<T extends { downloadUrl?: string | null }>(data: T): T {
+  if (data && data.downloadUrl) {
+    data.downloadUrl = resolveDownloadUrl(data.downloadUrl);
+  }
+  return data;
+}
+
+interface ApiEnvelope<T = any> {
+  success?: boolean;
+  data?: T;
+  error?: {
+    code?: string;
+    message?: string;
+    details?: any;
+  };
+  message?: string;
+}
+
+/**
+ * Safely parses HTTP responses from the backend without crashing on empty bodies, HTML error pages, or non-JSON payloads.
+ */
+async function parseJsonResponse<T = any>(res: Response, defaultErrorMessage: string): Promise<T> {
+  const text = await res.text();
+  let json: ApiEnvelope<T> | null = null;
+
+  if (text && text.trim().length > 0) {
+    try {
+      json = JSON.parse(text);
+    } catch {
+      // Body is not JSON (e.g., HTML error page, empty body, or reverse proxy error)
+    }
+  }
+
+  // Handle HTTP error codes with user-friendly diagnostics
+  if (!res.ok) {
+    if (json?.error?.message) {
+      const err = new Error(json.error.message);
+      if (json.error.code) (err as any).code = json.error.code;
+      throw err;
+    }
+
+    if (json?.message && typeof json.message === 'string') {
+      throw new Error(json.message);
+    }
+
+    if (res.status === 405) {
+      throw new Error(
+        'Backend service endpoint rejected the request (HTTP 405: Method Not Allowed). The conversion API is currently offline or improperly routed.'
+      );
+    }
+
+    if (res.status === 404) {
+      throw new Error(
+        'Backend endpoint not found (HTTP 404). Please ensure the backend conversion service is deployed and active.'
+      );
+    }
+
+    if (res.status === 413) {
+      throw new Error('The uploaded file exceeds the maximum allowed upload limit (100 MB).');
+    }
+
+    if (res.status === 502 || res.status === 503 || res.status === 504) {
+      throw new Error(
+        `Backend conversion engine is currently unreachable (HTTP ${res.status}). Please try again in a few moments.`
+      );
+    }
+
+    throw new Error(
+      `${defaultErrorMessage} (HTTP ${res.status}: ${res.statusText || 'Unexpected Server Error'})`
+    );
+  }
+
+  // If status is 200 OK but body is empty or not JSON:
+  if (!json) {
+    throw new Error('The server returned an empty or invalid response.');
+  }
+
+  // Check backend application error envelope
+  if (json.success === false) {
+    const err = new Error(json.error?.message || defaultErrorMessage);
+    if (json.error?.code) (err as any).code = json.error.code;
+    throw err;
+  }
+
+  return (json.data !== undefined ? json.data : json) as T;
+}
 
 export async function authFetch(url: string, init: RequestInit = {}): Promise<Response> {
   const token = await getSupabaseAccessToken();
@@ -36,11 +142,12 @@ export interface HealthStatus {
 }
 
 export async function checkBackendHealth(): Promise<HealthStatus> {
-  const res = await fetch(`${API_BASE}/health`);
-  if (!res.ok) {
-    throw new Error('Backend service is currently unreachable.');
+  try {
+    const res = await fetch(`${API_BASE}/health`);
+    return await parseJsonResponse<HealthStatus>(res, 'Backend service is currently unreachable.');
+  } catch (err: any) {
+    throw new Error(err.message || 'Backend service is currently unreachable.');
   }
-  return res.json();
 }
 
 /**
@@ -55,11 +162,7 @@ export async function mergePdfsApi(files: File[]): Promise<ProcessingResult> {
     body: formData,
   });
 
-  const json = await res.json();
-  if (!res.ok || !json.success) {
-    throw new Error(json.error?.message || 'Failed to merge PDF files.');
-  }
-  return json.data;
+  return normalizeResult(await parseJsonResponse<ProcessingResult>(res, 'Failed to merge PDF files.'));
 }
 
 /**
@@ -80,11 +183,7 @@ export async function splitPdfApi(
     body: formData,
   });
 
-  const json = await res.json();
-  if (!res.ok || !json.success) {
-    throw new Error(json.error?.message || 'Failed to split PDF file.');
-  }
-  return json.data;
+  return normalizeResult(await parseJsonResponse<ProcessingResult>(res, 'Failed to split PDF file.'));
 }
 
 /**
@@ -105,11 +204,7 @@ export async function rotatePdfApi(
     body: formData,
   });
 
-  const json = await res.json();
-  if (!res.ok || !json.success) {
-    throw new Error(json.error?.message || 'Failed to rotate PDF.');
-  }
-  return json.data;
+  return normalizeResult(await parseJsonResponse<ProcessingResult>(res, 'Failed to rotate PDF.'));
 }
 
 /**
@@ -128,11 +223,7 @@ export async function compressPdfApi(
     body: formData,
   });
 
-  const json = await res.json();
-  if (!res.ok || !json.success) {
-    throw new Error(json.error?.message || 'Failed to compress PDF.');
-  }
-  return json.data;
+  return normalizeResult(await parseJsonResponse<ProcessingResult>(res, 'Failed to compress PDF.'));
 }
 
 /**
@@ -155,11 +246,7 @@ export async function imgToPdfApi(
     body: formData,
   });
 
-  const json = await res.json();
-  if (!res.ok || !json.success) {
-    throw new Error(json.error?.message || 'Failed to convert images to PDF.');
-  }
-  return json.data;
+  return normalizeResult(await parseJsonResponse<ProcessingResult>(res, 'Failed to convert images to PDF.'));
 }
 
 /**
@@ -174,11 +261,7 @@ export async function pdfToImgApi(file: File): Promise<ProcessingResult> {
     body: formData,
   });
 
-  const json = await res.json();
-  if (!res.ok || !json.success) {
-    throw new Error(json.error?.message || 'Failed to convert PDF to images.');
-  }
-  return json.data;
+  return normalizeResult(await parseJsonResponse<ProcessingResult>(res, 'Failed to convert PDF to images.'));
 }
 
 /**
@@ -193,11 +276,7 @@ export async function wordToPdfApi(file: File): Promise<ProcessingResult> {
     body: formData,
   });
 
-  const json = await res.json();
-  if (!res.ok || !json.success) {
-    throw new Error(json.error?.message || 'Failed to convert Word document to PDF.');
-  }
-  return json.data;
+  return normalizeResult(await parseJsonResponse<ProcessingResult>(res, 'Failed to convert Word document to PDF.'));
 }
 
 /**
@@ -212,11 +291,7 @@ export async function excelToPdfApi(file: File): Promise<ProcessingResult> {
     body: formData,
   });
 
-  const json = await res.json();
-  if (!res.ok || !json.success) {
-    throw new Error(json.error?.message || 'Failed to convert Excel spreadsheet to PDF.');
-  }
-  return json.data;
+  return normalizeResult(await parseJsonResponse<ProcessingResult>(res, 'Failed to convert Excel spreadsheet to PDF.'));
 }
 
 /**
@@ -231,11 +306,7 @@ export async function pptToPdfApi(file: File): Promise<ProcessingResult> {
     body: formData,
   });
 
-  const json = await res.json();
-  if (!res.ok || !json.success) {
-    throw new Error(json.error?.message || 'Failed to convert PowerPoint presentation to PDF.');
-  }
-  return json.data;
+  return normalizeResult(await parseJsonResponse<ProcessingResult>(res, 'Failed to convert PowerPoint presentation to PDF.'));
 }
 
 /**
@@ -252,11 +323,12 @@ export async function pdfToWordApi(
     body: formData,
   });
 
-  const json = await res.json();
-  if (!res.ok || !json.success) {
-    throw new Error(json.error?.message || 'Failed to convert PDF to Word document.');
-  }
-  return json.data;
+  return normalizeResult(
+    await parseJsonResponse<ProcessingResult & { isScanned?: boolean; ocrRequired?: boolean }>(
+      res,
+      'Failed to convert PDF to Word document.'
+    )
+  );
 }
 
 /**
@@ -275,11 +347,7 @@ export async function organizePdfApi(
     body: formData,
   });
 
-  const json = await res.json();
-  if (!res.ok || !json.success) {
-    throw new Error(json.error?.message || 'Failed to organize PDF pages.');
-  }
-  return json.data;
+  return normalizeResult(await parseJsonResponse<ProcessingResult>(res, 'Failed to organize PDF pages.'));
 }
 
 /**
@@ -314,11 +382,7 @@ export async function watermarkTextApi(
     body: formData,
   });
 
-  const json = await res.json();
-  if (!res.ok || !json.success) {
-    throw new Error(json.error?.message || 'Failed to apply text watermark.');
-  }
-  return json.data;
+  return normalizeResult(await parseJsonResponse<ProcessingResult>(res, 'Failed to apply text watermark.'));
 }
 
 /**
@@ -351,11 +415,7 @@ export async function watermarkImageApi(
     body: formData,
   });
 
-  const json = await res.json();
-  if (!res.ok || !json.success) {
-    throw new Error(json.error?.message || 'Failed to apply image watermark.');
-  }
-  return json.data;
+  return normalizeResult(await parseJsonResponse<ProcessingResult>(res, 'Failed to apply image watermark.'));
 }
 
 /**
@@ -394,11 +454,7 @@ export async function addPageNumbersApi(
     body: formData,
   });
 
-  const json = await res.json();
-  if (!res.ok || !json.success) {
-    throw new Error(json.error?.message || 'Failed to add page numbers.');
-  }
-  return json.data;
+  return normalizeResult(await parseJsonResponse<ProcessingResult>(res, 'Failed to add page numbers.'));
 }
 
 /**
@@ -419,11 +475,7 @@ export async function protectPdfApi(
     body: formData,
   });
 
-  const json = await res.json();
-  if (!res.ok || !json.success) {
-    throw new Error(json.error?.message || 'Failed to protect PDF document.');
-  }
-  return json.data;
+  return normalizeResult(await parseJsonResponse<ProcessingResult>(res, 'Failed to protect PDF document.'));
 }
 
 /**
@@ -442,11 +494,7 @@ export async function unlockPdfApi(
     body: formData,
   });
 
-  const json = await res.json();
-  if (!res.ok || !json.success) {
-    throw new Error(json.error?.message || 'Failed to unlock PDF document.');
-  }
-  return json.data;
+  return normalizeResult(await parseJsonResponse<ProcessingResult>(res, 'Failed to unlock PDF document.'));
 }
 
 /* ==========================================================================
@@ -466,11 +514,7 @@ export async function registerApi(data: {
     body: JSON.stringify(data),
   });
 
-  const json = await res.json();
-  if (!res.ok || !json.success) {
-    throw new Error(json.error?.message || 'Registration failed.');
-  }
-  return json.data;
+  return parseJsonResponse<{ user: User }>(res, 'Registration failed.');
 }
 
 export async function loginApi(data: {
@@ -484,21 +528,18 @@ export async function loginApi(data: {
     body: JSON.stringify(data),
   });
 
-  const json = await res.json();
-  if (!res.ok || !json.success) {
-    throw new Error(json.error?.message || 'Invalid email or password.');
-  }
-  return json.data;
+  return parseJsonResponse<{ user: User }>(res, 'Invalid email or password.');
 }
 
 export async function logoutApi(): Promise<void> {
-  const res = await fetch(`${API_BASE}/auth/logout`, {
-    method: 'POST',
-    credentials: 'include',
-  });
-  const json = await res.json();
-  if (!res.ok || !json.success) {
-    throw new Error(json.error?.message || 'Failed to logout.');
+  try {
+    const res = await fetch(`${API_BASE}/auth/logout`, {
+      method: 'POST',
+      credentials: 'include',
+    });
+    await parseJsonResponse(res, 'Failed to logout.');
+  } catch {
+    // Client-side session clear can proceed even if logout route fails
   }
 }
 
@@ -509,18 +550,19 @@ export async function getMeApi(tokenOverride?: string | null): Promise<User | nu
     headers.set('Authorization', `Bearer ${token}`);
   }
 
-  const res = await fetch(`${API_BASE}/auth/me`, {
-    headers,
-    credentials: 'include',
-  });
-  if (res.status === 401) {
+  try {
+    const res = await fetch(`${API_BASE}/auth/me`, {
+      headers,
+      credentials: 'include',
+    });
+    if (res.status === 401 || res.status === 404 || res.status === 405) {
+      return null;
+    }
+    const data = await parseJsonResponse<{ user: User }>(res, 'Failed to fetch user profile.');
+    return data?.user || null;
+  } catch {
     return null;
   }
-  const json = await res.json();
-  if (!res.ok || !json.success) {
-    return null;
-  }
-  return json.data.user;
 }
 
 /* ==========================================================================
@@ -533,20 +575,16 @@ export async function getDashboardApi(): Promise<{
   recentJobs: JobRecord[];
 }> {
   const res = await authFetch(`${API_BASE}/dashboard`);
-  const json = await res.json();
-  if (!res.ok || !json.success) {
-    throw new Error(json.error?.message || 'Failed to load dashboard data.');
-  }
-  return json.data;
+  return parseJsonResponse<{
+    user: User;
+    usage: UsageSummary;
+    recentJobs: JobRecord[];
+  }>(res, 'Failed to load dashboard data.');
 }
 
 export async function getUsageApi(): Promise<UsageSummary> {
   const res = await authFetch(`${API_BASE}/usage`);
-  const json = await res.json();
-  if (!res.ok || !json.success) {
-    throw new Error(json.error?.message || 'Failed to load usage quotas.');
-  }
-  return json.data;
+  return parseJsonResponse<UsageSummary>(res, 'Failed to load usage quotas.');
 }
 
 export async function getJobsApi(options?: {
@@ -563,21 +601,14 @@ export async function getJobsApi(options?: {
 
   const url = `${API_BASE}/jobs?${params.toString()}`;
   const res = await authFetch(url);
-  const json = await res.json();
-  if (!res.ok || !json.success) {
-    throw new Error(json.error?.message || 'Failed to load job history.');
-  }
-  return json.data;
+  return parseJsonResponse<JobsListResponse>(res, 'Failed to load job history.');
 }
 
 export async function deleteJobApi(jobId: string): Promise<void> {
   const res = await authFetch(`${API_BASE}/jobs/${jobId}`, {
     method: 'DELETE',
   });
-  const json = await res.json();
-  if (!res.ok || !json.success) {
-    throw new Error(json.error?.message || 'Failed to delete job record.');
-  }
+  await parseJsonResponse(res, 'Failed to delete job record.');
 }
 
 /**
@@ -601,11 +632,7 @@ export async function ocrPdfApi(
     credentials: 'include',
   });
 
-  const json = await res.json();
-  if (!res.ok || !json.success) {
-    throw new Error(json.error?.message || 'OCR processing failed.');
-  }
-  return json.data;
+  return normalizeResult(await parseJsonResponse<OcrResultData>(res, 'OCR processing failed.'));
 }
 
 /**
@@ -621,11 +648,7 @@ export async function repairPdfApi(file: File): Promise<RepairResultData> {
     credentials: 'include',
   });
 
-  const json = await res.json();
-  if (!res.ok || !json.success) {
-    throw new Error(json.error?.message || 'PDF repair was unsuccessful.');
-  }
-  return json.data;
+  return normalizeResult(await parseJsonResponse<RepairResultData>(res, 'PDF repair was unsuccessful.'));
 }
 
 /**
@@ -642,11 +665,7 @@ export async function comparePdfApi(file1: File, file2: File): Promise<CompareRe
     credentials: 'include',
   });
 
-  const json = await res.json();
-  if (!res.ok || !json.success) {
-    throw new Error(json.error?.message || 'PDF comparison failed.');
-  }
-  return json.data;
+  return normalizeResult(await parseJsonResponse<CompareResultData>(res, 'PDF comparison failed.'));
 }
 
 /**
@@ -666,13 +685,7 @@ export async function summarizePdfApi(
     credentials: 'include',
   });
 
-  const json = await res.json();
-  if (!res.ok || !json.success) {
-    const err = new Error(json.error?.message || 'AI summarization failed.');
-    (err as any).code = json.error?.code;
-    throw err;
-  }
-  return json.data;
+  return parseJsonResponse<AiSummaryResultData>(res, 'AI summarization failed.');
 }
 
 /**
@@ -689,14 +702,5 @@ export async function askPdfApi(file: File, question: string): Promise<AiAnswerR
     credentials: 'include',
   });
 
-  const json = await res.json();
-  if (!res.ok || !json.success) {
-    const err = new Error(json.error?.message || 'Failed to answer question.');
-    (err as any).code = json.error?.code;
-    throw err;
-  }
-  return json.data;
+  return parseJsonResponse<AiAnswerResultData>(res, 'Failed to answer question.');
 }
-
-
-

@@ -50,7 +50,7 @@
   ],
   "rewrites": [
     {
-      "source": "/((?!sitemap\\.xml|robots\\.txt|.*\\.(?:png|jpg|jpeg|gif|svg|ico|webp|xml|txt|json|webmanifest)$|assets/).*)",
+      "source": "/((?!api/|sitemap\\.xml|robots\\.txt|.*\\.(?:png|jpg|jpeg|gif|svg|ico|webp|xml|txt|json|webmanifest)$|assets/).*)",
       "destination": "/index.html"
     }
   ]
